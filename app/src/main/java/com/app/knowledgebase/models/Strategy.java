@@ -1,5 +1,17 @@
 package com.app.knowledgebase.models;
 
-public enum Strategy {
-    LEX, FIRST_ACTIVATED, LAST_ACTIVATED, SIMPLICITY, MEA
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
+
+public class Strategy extends RealmObject {
+    @PrimaryKey @Required private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

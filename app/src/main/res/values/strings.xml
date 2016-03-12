@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">KnowledgeBase</string>
     <string name="action_settings">Settings</string>
+    <string name="facts_hint">Add new fact…</string>
+    <string name="facts_category">Facts list</string>
+    <string name="facts_edit_fact">Edit fact</string>
+    <string name="facts_description">Fact description</string>
+    <string name="action_save">Save</string>
+    <string name="action_remove">Remove</string>
+    <string name="action_cancel">Cancel</string>
 </resources>

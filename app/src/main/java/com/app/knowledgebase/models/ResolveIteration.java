@@ -1,21 +1,13 @@
 package com.app.knowledgebase.models;
 
-import java.util.List;
+import io.realm.RealmList;
+import io.realm.RealmObject;
 
-import io.realm.annotations.Required;
-
-public class ResolveIteration {
-    @Required private int number;
-    @Required private List<Fact> facts;
-    private List<Rule> rulesUsed;
+public class ResolveIteration extends RealmObject {
+    private int number;
+    private RealmList<Fact> facts;
+    private RealmList<Rule> rulesUsed;
     private Integer conflict;
-
-    public ResolveIteration(int number, List<Fact> facts, List<Rule> rulesUsed, Integer conflict) {
-        this.number = number;
-        this.facts = facts;
-        this.rulesUsed = rulesUsed;
-        this.conflict = conflict;
-    }
 
     public int getNumber() {
         return number;
@@ -25,19 +17,19 @@ public class ResolveIteration {
         this.number = number;
     }
 
-    public List<Fact> getFacts() {
+    public RealmList<Fact> getFacts() {
         return facts;
     }
 
-    public void setFacts(List<Fact> facts) {
+    public void setFacts(RealmList<Fact> facts) {
         this.facts = facts;
     }
 
-    public List<Rule> getRulesUsed() {
+    public RealmList<Rule> getRulesUsed() {
         return rulesUsed;
     }
 
-    public void setRulesUsed(List<Rule> rulesUsed) {
+    public void setRulesUsed(RealmList<Rule> rulesUsed) {
         this.rulesUsed = rulesUsed;
     }
 

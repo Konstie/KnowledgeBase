@@ -1,11 +1,13 @@
-package com.app.knowledgebase.ui.sections.abs;
+package com.app.knowledgebase.ui.sections.abs.presenter;
 
 import android.content.Context;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
-public class BasePresenter implements BasePresenterListener {
+public class BasePresenter implements IBasePresenter {
+    private static final String DB_NAME = "knowledge.realm";
+
     private Context context;
 
     public BasePresenter(Context context) {
@@ -13,10 +15,10 @@ public class BasePresenter implements BasePresenterListener {
     }
 
     @Override
-    public Realm getDatabase(String dbName) {
+    public Realm getDatabase() {
         return Realm.getInstance(
                 new RealmConfiguration.Builder(context)
-                        .name(dbName)
+                        .name(DB_NAME)
                         .build()
         );
     }

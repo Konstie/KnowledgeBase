@@ -3,38 +3,22 @@ package com.app.knowledgebase.models;
 import java.util.Date;
 import java.util.List;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.Required;
 
 public class Rule extends RealmObject {
-    @Required private int id;
-    @Required private boolean activated;
-    private List<Fact> facts;
+    private boolean activated;
+    private RealmList<Fact> facts;
     private Fact resultFact;
     private Date dateAdded;
     private KnowledgeBase knowledgeBase;
 
-    public Rule(int id, List<Fact> facts, Fact resultFact, boolean activated, Date dateAdded) {
-        this.id = id;
-        this.facts = facts;
-        this.resultFact = resultFact;
-        this.activated = activated;
-        this.dateAdded = dateAdded;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public List<Fact> getFacts() {
+    public RealmList<Fact> getFacts() {
         return facts;
     }
 
-    public void setFacts(List<Fact> facts) {
+    public void setFacts(RealmList<Fact> facts) {
         this.facts = facts;
     }
 

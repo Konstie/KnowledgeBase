@@ -1,33 +1,16 @@
 package com.app.knowledgebase.models;
 
-import java.util.List;
-
+import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
 public class KnowledgeBase extends RealmObject {
-    private int id;
-    @Required private String title;
-    @Required private List<Fact> startFacts;
-    @Required private List<Strategy> strategies;
-    private List<Rule> rules;
-    private List<ResolveIteration> resolveIterations;
-
-    public KnowledgeBase(int id, String title, List<Fact> startFacts, List<Strategy> strategies, List<Rule> rules) {
-        this.id = id;
-        this.title = title;
-        this.startFacts = startFacts;
-        this.strategies = strategies;
-        this.rules = rules;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    @PrimaryKey @Required private String title;
+    private RealmList<IteratedFact> startFacts;
+    private Strategy strategy;
+    private RealmList<Rule> rules;
+    private RealmList<ResolveIteration> resolveIterations;
 
     public String getTitle() {
         return title;
@@ -37,35 +20,35 @@ public class KnowledgeBase extends RealmObject {
         this.title = title;
     }
 
-    public List<Fact> getStartFacts() {
+    public RealmList<IteratedFact> getStartFacts() {
         return startFacts;
     }
 
-    public void setStartFacts(List<Fact> startFacts) {
+    public void setStartFacts(RealmList<IteratedFact> startFacts) {
         this.startFacts = startFacts;
     }
 
-    public List<Strategy> getStrategies() {
-        return strategies;
+    public Strategy getStrategy() {
+        return strategy;
     }
 
-    public void setStrategies(List<Strategy> strategies) {
-        this.strategies = strategies;
+    public void setStrategy(Strategy strategy) {
+        this.strategy = strategy;
     }
 
-    public List<Rule> getRules() {
+    public RealmList<Rule> getRules() {
         return rules;
     }
 
-    public void setRules(List<Rule> rules) {
+    public void setRules(RealmList<Rule> rules) {
         this.rules = rules;
     }
 
-    public List<ResolveIteration> getResolveIterations() {
+    public RealmList<ResolveIteration> getResolveIterations() {
         return resolveIterations;
     }
 
-    public void setResolveIterations(List<ResolveIteration> resolveIterations) {
+    public void setResolveIterations(RealmList<ResolveIteration> resolveIterations) {
         this.resolveIterations = resolveIterations;
     }
 }
