@@ -8,7 +8,7 @@ import io.realm.annotations.Required;
 public class KnowledgeBase extends RealmObject {
     @PrimaryKey @Required private String title;
     private RealmList<IteratedFact> startFacts;
-    private Strategy strategy;
+    private RealmList<Strategy> strategies;
     private RealmList<Rule> rules;
     private RealmList<ResolveIteration> resolveIterations;
 
@@ -28,12 +28,12 @@ public class KnowledgeBase extends RealmObject {
         this.startFacts = startFacts;
     }
 
-    public Strategy getStrategy() {
-        return strategy;
+    public RealmList<Strategy> getStrategies() {
+        return strategies;
     }
 
-    public void setStrategy(Strategy strategy) {
-        this.strategy = strategy;
+    public void setStrategies(RealmList<Strategy> strategies) {
+        this.strategies = strategies;
     }
 
     public RealmList<Rule> getRules() {

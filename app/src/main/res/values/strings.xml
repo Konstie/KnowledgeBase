@@ -8,4 +8,14 @@
     <string name="action_save">Save</string>
     <string name="action_remove">Remove</string>
     <string name="action_cancel">Cancel</string>
+    <string name="rule_then">then</string>
+    <string name="rule_date">added</string>
+    <string name="rule_fact">Fact #$1%d</string>
+    <string name="rule_category">Add new rule</string>
+
+    <string-array name="condition_operators">
+        <item></item>
+        <item>or</item>
+        <item>and</item>
+    </string-array>
 </resources>

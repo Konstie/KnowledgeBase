@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_add_fact"
+    android:layout_width="match_parent"
+    android:layout_height="112dp"
+    android:background="@color/colorGreyLight"
+    android:padding="16dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:id="@+id/label_then"
+        android:textColor="@color/colorPrimaryText"
+        android:text="@string/rule_then"/>
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/btn_swipe_right"
+        android:background="@null"
+        android:src="@mipmap/ic_swipe_right"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"/>
+
+    <AutoCompleteTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/edit_result"
+        android:layout_below="@id/label_then"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/colorPrimaryText"
+        android:textSize="18sp"
+        android:layout_toLeftOf="@+id/btn_swipe_right"
+        android:layout_toStartOf="@+id/btn_swipe_right" />
+
+</RelativeLayout>

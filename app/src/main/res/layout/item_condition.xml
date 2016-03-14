@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/layout_condition_details"
+    android:padding="16dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fact"
+        android:textSize="16sp"
+        android:id="@+id/text_fact_pos"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_fact_pos"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="2"
+            android:clickable="false"
+            android:id="@+id/spinner_or_and"/>
+        <AutoCompleteTextView
+            android:layout_weight="4"
+            android:layout_width="0dp"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:id="@+id/edit_fact_pos"/>
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_remove"
+            android:layout_weight="1"
+            android:background="@null"
+            android:src="@mipmap/ic_action_delete"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+</RelativeLayout>

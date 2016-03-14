@@ -2,11 +2,11 @@ package com.app.knowledgebase.ui.sections.facts.presenter;
 
 import android.content.Context;
 
+import com.app.knowledgebase.dao.FactsDao;
 import com.app.knowledgebase.models.Fact;
 import com.app.knowledgebase.ui.sections.abs.presenter.BasePresenter;
 
 import io.realm.Realm;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 public class FactsListPresenter extends BasePresenter implements IFactsListPresenter {
@@ -39,24 +39,14 @@ public class FactsListPresenter extends BasePresenter implements IFactsListPrese
 
     @Override
     public void onSaveFactClicked(Fact fact, String newDescription) {
-        RealmQuery<Fact> query = database.where(Fact.class);
-        query.equalTo("description", fact.getDescription());
-
-        Fact factToUpdate = query.findFirst();
-        database.beginTransaction();
-        factToUpdate.setDescription(newDescription);
-        database.commitTransaction();
+        Fact factToUpdate = FactsDao.get().findFactByDescription(database, newDescription);
+        FactsDao.get().updateFact(database, factToUpdate, newDescription);
     }
 
     @Override
     public void onRemoveFactClicked(Fact fact) {
-        RealmQuery<Fact> query = database.where(Fact.class);
-        query.equalTo("description", fact.getDescription());
-
-        Fact factToRemove = query.findFirst();
-        database.beginTransaction();
-        factToRemove.removeFromRealm();
-        database.commitTransaction();
+        Fact factToRemove = FactsDao.get().findFactByDescription(database, fact.getDescription());
+        FactsDao.get().removeFact(database, factToRemove);
     }
 
     @Override

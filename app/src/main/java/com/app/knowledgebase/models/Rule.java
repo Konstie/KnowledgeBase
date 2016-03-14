@@ -1,18 +1,27 @@
 package com.app.knowledgebase.models;
 
+import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.Required;
 
-public class Rule extends RealmObject {
+public class Rule extends RealmObject implements Serializable {
+    private int id;
     private boolean activated;
     private RealmList<Fact> facts;
     private Fact resultFact;
     private Date dateAdded;
-    private KnowledgeBase knowledgeBase;
+//    private KnowledgeBase knowledgeBase;
+    private int factsCount;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public RealmList<Fact> getFacts() {
         return facts;
@@ -46,11 +55,19 @@ public class Rule extends RealmObject {
         this.dateAdded = dateAdded;
     }
 
-    public KnowledgeBase getKnowledgeBase() {
-        return knowledgeBase;
+//    public KnowledgeBase getKnowledgeBase() {
+//        return knowledgeBase;
+//    }
+//
+//    public void setKnowledgeBase(KnowledgeBase knowledgeBase) {
+//        this.knowledgeBase = knowledgeBase;
+//    }
+
+    public int getFactsCount() {
+        return factsCount;
     }
 
-    public void setKnowledgeBase(KnowledgeBase knowledgeBase) {
-        this.knowledgeBase = knowledgeBase;
+    public void setFactsCount(int factsCount) {
+        this.factsCount = factsCount;
     }
 }
