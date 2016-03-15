@@ -3,6 +3,7 @@ package com.app.knowledgebase.dao;
 import com.app.knowledgebase.models.Fact;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.realm.Realm;
@@ -44,8 +45,12 @@ public class FactsDao {
     }
 
     public void removeFact(Realm database, Fact fact) {
-        database.beginTransaction();
-        fact.removeFromRealm();
-        database.commitTransaction();
+        database.executeTransaction(realm -> fact.removeFromRealm());
+    }
+
+    public List<String> getAllSortedFactsInText(Realm database) {
+        List<String> allFacts = getAllFacts(database);
+        Collections.sort(allFacts);
+        return allFacts;
     }
 }

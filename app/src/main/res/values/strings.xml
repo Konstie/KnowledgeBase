@@ -12,6 +12,8 @@
     <string name="rule_date">added</string>
     <string name="rule_fact">Fact #$1%d</string>
     <string name="rule_category">Add new rule</string>
+    <string name="rule_tap_to_add_fact">Tap to add condition...</string>
+    <string name="rule_change_fact">Change fact</string>
 
     <string-array name="condition_operators">
         <item></item>

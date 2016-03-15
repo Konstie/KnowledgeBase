@@ -8,11 +8,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.app.knowledgebase.R;
 import com.app.knowledgebase.dao.FactsDao;
+import com.app.knowledgebase.models.Condition;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,16 +25,13 @@ import butterknife.ButterKnife;
 import io.realm.Realm;
 
 public class ConditionsAdapter extends BaseAdapter {
-    private static final int OPERATOR_POS = 0;
-    private static final int FACT_POS = 1;
-
     private Context context;
     private HashMap<Integer, List<String>> conditionsMap;
 
     static class ConditionHolder {
         @Bind(R.id.text_fact_pos) TextView textFactPosition;
         @Bind(R.id.spinner_or_and) Spinner spinnerOperator;
-        @Bind(R.id.edit_fact_pos) AutoCompleteTextView editFact;
+        @Bind(R.id.edit_fact_pos) EditText editFact;
 
         public ConditionHolder(View view) {
             ButterKnife.bind(this, view);
@@ -84,19 +83,12 @@ public class ConditionsAdapter extends BaseAdapter {
             holder.spinnerOperator.setVisibility(View.GONE);
         }
 
-        holder.spinnerOperator.setSelection(getSelectedOperatorIndex(adapter, currentCondition.get(OPERATOR_POS)));
+        holder.spinnerOperator.setSelection(getSelectedOperatorIndex(adapter, currentCondition.get(Condition.OPERATOR_POS)));
 
-        List<String> allFacts = getAllFacts();
-        ArrayAdapter<String> factsAdapter = new ArrayAdapter<String>(
-                context,
-                android.R.layout.simple_dropdown_item_1line,
-                allFacts
-        );
-        holder.editFact.setAdapter(factsAdapter);
-        holder.editFact.setListSelection((allFacts.indexOf(currentCondition.get(FACT_POS)) != -1) ? allFacts.indexOf(currentCondition.get(FACT_POS)) : 0);
-        holder.editFact.setOnItemClickListener((parent1, view, position1, id) -> {
-            currentCondition.set(FACT_POS, factsAdapter.getItem(position1));
-        });
+        String condition = conditionsMap.get(position).get(Condition.FACT_POS);
+        if (condition != null && !condition.isEmpty()) {
+            holder.editFact.setText(conditionsMap.get(position).get(Condition.FACT_POS));
+        }
 
         return convertView;
     }
@@ -106,11 +98,5 @@ public class ConditionsAdapter extends BaseAdapter {
             if (adapter.getItem(i).equals(value)) return i;
         }
         return -1;
-    }
-
-    private List<String> getAllFacts() {
-        List<String> allFacts = FactsDao.get().getAllFacts(Realm.getInstance(context));
-        Collections.sort(allFacts);
-        return allFacts;
     }
 }

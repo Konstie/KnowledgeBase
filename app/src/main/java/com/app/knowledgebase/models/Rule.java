@@ -9,7 +9,7 @@ import io.realm.RealmObject;
 public class Rule extends RealmObject implements Serializable {
     private int id;
     private boolean activated;
-    private RealmList<Fact> facts;
+    private RealmList<Condition> conditions;
     private Fact resultFact;
     private Date dateAdded;
 //    private KnowledgeBase knowledgeBase;
@@ -23,12 +23,12 @@ public class Rule extends RealmObject implements Serializable {
         this.id = id;
     }
 
-    public RealmList<Fact> getFacts() {
-        return facts;
+    public RealmList<Condition> getConditions() {
+        return conditions;
     }
 
-    public void setFacts(RealmList<Fact> facts) {
-        this.facts = facts;
+    public void setConditions(RealmList<Condition> conditions) {
+        this.conditions = conditions;
     }
 
     public Fact getResultFact() {

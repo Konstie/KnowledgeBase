@@ -1,11 +1,13 @@
 package com.app.knowledgebase.models;
 
+import java.io.Serializable;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
-public class KnowledgeBase extends RealmObject {
+public class KnowledgeBase extends RealmObject implements Serializable {
     @PrimaryKey @Required private String title;
     private RealmList<IteratedFact> startFacts;
     private RealmList<Strategy> strategies;
