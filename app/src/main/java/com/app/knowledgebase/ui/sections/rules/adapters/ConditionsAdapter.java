@@ -4,53 +4,40 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.BaseAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.app.knowledgebase.R;
-import com.app.knowledgebase.dao.FactsDao;
 import com.app.knowledgebase.models.Condition;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.realm.Realm;
+import io.realm.RealmBaseAdapter;
+import io.realm.RealmResults;
 
-public class ConditionsAdapter extends BaseAdapter {
-    private Context context;
-    private HashMap<Integer, List<String>> conditionsMap;
+public class ConditionsAdapter extends RealmBaseAdapter<Condition> {
+    public ConditionsAdapter(Context context, RealmResults<Condition> realmResults, boolean automaticUpdate) {
+        super(context, realmResults, automaticUpdate);
+    }
 
     static class ConditionHolder {
         @Bind(R.id.text_fact_pos) TextView textFactPosition;
-        @Bind(R.id.spinner_or_and) Spinner spinnerOperator;
-        @Bind(R.id.edit_fact_pos) EditText editFact;
+        @Bind(R.id.text_condition_operator) TextView textOperator;
+        @Bind(R.id.text_condition_fact) TextView textFact;
 
         public ConditionHolder(View view) {
             ButterKnife.bind(this, view);
         }
     }
 
-    public ConditionsAdapter(Context context, HashMap<Integer, List<String>> conditionsMap) {
-        this.context = context;
-        this.conditionsMap = conditionsMap;
+    @Override
+    public Condition getItem(int i) {
+        return realmResults.get(i);
     }
 
     @Override
     public int getCount() {
-        return conditionsMap.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return conditionsMap.get(position);
+        return realmResults.size();
     }
 
     @Override
@@ -70,33 +57,16 @@ public class ConditionsAdapter extends BaseAdapter {
             holder = (ConditionHolder) convertView.getTag();
         }
 
-        List<String> currentCondition = conditionsMap.get(position);
+        Condition currentCondition = getItem(position);
         holder.textFactPosition.setText(String.format(context.getResources().getString(R.string.rule_fact), position));
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
-                R.array.condition_operators, android.R.layout.simple_spinner_dropdown_item
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        holder.spinnerOperator.setAdapter(adapter);
-
+        holder.textOperator.setText(currentCondition.getConditionItem().getConditionOperator());
         if (position == 0) {
-            holder.spinnerOperator.setVisibility(View.GONE);
+            holder.textOperator.setVisibility(View.GONE);
         }
 
-        holder.spinnerOperator.setSelection(getSelectedOperatorIndex(adapter, currentCondition.get(Condition.OPERATOR_POS)));
-
-        String condition = conditionsMap.get(position).get(Condition.FACT_POS);
-        if (condition != null && !condition.isEmpty()) {
-            holder.editFact.setText(conditionsMap.get(position).get(Condition.FACT_POS));
-        }
+        holder.textFact.setText(currentCondition.getConditionItem().getConditionFact());
 
         return convertView;
-    }
-
-    private int getSelectedOperatorIndex(ArrayAdapter adapter, String value) {
-        for (int i = 0, count = adapter.getCount(); i < count; i++) {
-            if (adapter.getItem(i).equals(value)) return i;
-        }
-        return -1;
     }
 }

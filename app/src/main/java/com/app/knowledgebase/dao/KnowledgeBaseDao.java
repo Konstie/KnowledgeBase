@@ -4,7 +4,9 @@ import com.app.knowledgebase.models.KnowledgeBase;
 import com.app.knowledgebase.models.Rule;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 public class KnowledgeBaseDao {
     private static KnowledgeBaseDao instance;
@@ -16,6 +18,10 @@ public class KnowledgeBaseDao {
             instance = new KnowledgeBaseDao();
         }
         return instance;
+    }
+
+    public RealmResults<KnowledgeBase> findAllKnowledgeBases(Realm database) {
+        return database.where(KnowledgeBase.class).findAllAsync();
     }
 
     public KnowledgeBase findKnowledgeBaseByTitle(Realm database, String baseTitle) {

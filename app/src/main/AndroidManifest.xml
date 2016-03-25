@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.sections.rules.NewRuleActivity"
+            android:name=".ui.sections.knowledgebases.KnowledgeBasesListActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
@@ -21,7 +21,7 @@
         </activity>
 
         <activity
-            android:name=".ui.sections.facts.FactsListActivity"
+            android:name=".ui.sections.knowledgebases.NewKnowledgeBaseActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">

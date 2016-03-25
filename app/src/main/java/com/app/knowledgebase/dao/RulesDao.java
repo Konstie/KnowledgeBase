@@ -17,11 +17,10 @@ public class RulesDao {
         return instance;
     }
 
-    public Rule findRuleByIdAndKnowledgeBaseId(Realm database, int ruleId, String knowledgeBaseName) {
+    public Rule findRuleByUniqueId(Realm database, String uniqueId) {
         RealmQuery<Rule> query = database.where(Rule.class);
         query
-                .equalTo("description", ruleId)
-                .equalTo("knowledgeBase.title", knowledgeBaseName);
+                .equalTo("uniqueId", uniqueId);
         return query.findFirst();
     }
 }

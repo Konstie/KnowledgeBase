@@ -8,11 +8,20 @@ import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
 public class KnowledgeBase extends RealmObject implements Serializable {
-    @PrimaryKey @Required private String title;
+    @PrimaryKey private int id;
+    @Required private String title;
     private RealmList<IteratedFact> startFacts;
     private RealmList<Strategy> strategies;
     private RealmList<Rule> rules;
     private RealmList<ResolveIteration> resolveIterations;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;

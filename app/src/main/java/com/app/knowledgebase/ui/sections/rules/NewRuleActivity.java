@@ -8,10 +8,15 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.app.knowledgebase.R;
+import com.app.knowledgebase.constants.Constants;
 import com.app.knowledgebase.events.SwipedRulePanelEvent;
+import com.app.knowledgebase.helpers.IdHelper;
+import com.app.knowledgebase.models.KnowledgeBase;
 import com.app.knowledgebase.ui.sections.abs.BaseActivity;
 import com.app.knowledgebase.ui.sections.rules.adapters.ConditionsAdapter;
+import com.app.knowledgebase.ui.sections.rules.fragments.EditConditionDialogFragment;
 import com.app.knowledgebase.ui.sections.rules.presenters.AddRulePresenter;
+import com.app.knowledgebase.ui.sections.rules.presenters.ConditionOperators;
 import com.app.knowledgebase.ui.sections.rules.presenters.IAddRuleView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -29,7 +34,9 @@ public class NewRuleActivity extends BaseActivity implements IAddRuleView {
     private static final int PAGE_RESULT = 0;
     private static final int PAGE_DATE = 1;
 
-    private HashMap<Integer, List<String>> conditionsMap;
+    private int newRulePosition;
+    private String knowledgeBaseName;
+    private String ruleUniqueId;
 
     private AddRulePresenter presenter;
     private ConditionsAdapter adapter;
@@ -46,11 +53,15 @@ public class NewRuleActivity extends BaseActivity implements IAddRuleView {
         ButterKnife.bind(this);
         setToolbar(toolbar, R.string.rule_category, true);
 
-        conditionsMap = new HashMap<>();
-        conditionsMap.put(0, new ArrayList<String>(Arrays.asList("", "")));
+        if (getIntent() != null) {
+            newRulePosition = getIntent().getIntExtra(KEY_RULE_POSITION_IN_BASE, -1);
+            knowledgeBaseName = getIntent().getStringExtra(KEY_KNOWLEDGE_BASE_NAME);
+            ruleUniqueId = IdHelper.get().getNewRuleId(knowledgeBaseName, newRulePosition);
+        }
+
         presenter = new AddRulePresenter(this, this);
 
-        adapter = new ConditionsAdapter(this, conditionsMap);
+//        adapter = new ConditionsAdapter(this, presenter.get);
         listConditions.setAdapter(adapter);
         View listFooter = getLayoutInflater().inflate(R.layout.footer_add_condition, null, false);
         listFooter.findViewById(R.id.btn_add_condition).setOnClickListener(v -> {
@@ -87,8 +98,10 @@ public class NewRuleActivity extends BaseActivity implements IAddRuleView {
     @Override
     public void addNewCondition() {
         int currentConditionPos = adapter.getCount();
-        conditionsMap.put(currentConditionPos, new ArrayList<String>(Arrays.asList("", "")));
-        adapter.notifyDataSetChanged();
+//        String conditionUniqueId = IdHelper.get().getNewConditionId(ruleUniqueId, conditions.size());
+//        EditConditionDialogFragment
+//                .newInstance(conditionUniqueId, currentConditionPos, ConditionOperators.NONE, "")
+//                .show(getSupportFragmentManager(), "");
     }
 
     @Override

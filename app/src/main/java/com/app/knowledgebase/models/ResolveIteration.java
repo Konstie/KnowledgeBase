@@ -2,12 +2,22 @@ package com.app.knowledgebase.models;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class ResolveIteration extends RealmObject {
+    @PrimaryKey private String uniqueId;
     private int number;
     private RealmList<Fact> facts;
     private RealmList<Rule> rulesUsed;
     private Integer conflict;
+
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
 
     public int getNumber() {
         return number;

@@ -2,8 +2,11 @@ package com.app.knowledgebase.dao;
 
 import com.app.knowledgebase.models.Condition;
 
+import java.util.List;
+
 import io.realm.Realm;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 public class ConditionsDao {
     private static ConditionsDao instance;
@@ -24,4 +27,10 @@ public class ConditionsDao {
                 .equalTo("positionInRule", position);
         return query.findFirstAsync();
     }
+//
+//    public RealmResults<Condition> findAllConditionsForRule(Realm database, int ruleId) {
+//        RealmQuery<Condition> query = database.where(Condition.class);
+////        query
+////                .equalTo("")
+//    }
 }

@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 public abstract class BaseActivity extends AppCompatActivity {
+    protected static final String KEY_KNOWLEDGE_BASE_NAME = "KEY_KNOWLEDGE_BASE_NAME";
+    protected static final String KEY_RULE_POSITION_IN_BASE = "KEY_RULE_POSITION_IN_BASE";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -5,14 +5,15 @@ import java.util.Date;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 public class Rule extends RealmObject implements Serializable {
-    private int id;
+    @PrimaryKey private int id;
     private boolean activated;
     private RealmList<Condition> conditions;
     private Fact resultFact;
     private Date dateAdded;
-//    private KnowledgeBase knowledgeBase;
     private int factsCount;
 
     public int getId() {
@@ -54,14 +55,6 @@ public class Rule extends RealmObject implements Serializable {
     public void setDateAdded(Date dateAdded) {
         this.dateAdded = dateAdded;
     }
-
-//    public KnowledgeBase getKnowledgeBase() {
-//        return knowledgeBase;
-//    }
-//
-//    public void setKnowledgeBase(KnowledgeBase knowledgeBase) {
-//        this.knowledgeBase = knowledgeBase;
-//    }
 
     public int getFactsCount() {
         return factsCount;
