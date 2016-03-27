@@ -16,6 +16,8 @@ import com.app.knowledgebase.ui.sections.knowledgebases.presenters.IKnowledgeBas
 import com.app.knowledgebase.ui.sections.knowledgebases.presenters.KnowledgeBaseDetailsPresenter;
 import com.app.knowledgebase.ui.sections.rules.adapters.RulesListAdapter;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.realm.RealmResults;
@@ -39,9 +41,10 @@ public class KnowledgeBaseDetailsActivity extends BaseActivity implements IKnowl
 
         presenter = new KnowledgeBaseDetailsPresenter(this, this);
         presenter.getKnowledgeBaseId();
+        presenter.onRulesListFilled(knowledgeBaseId);
 
         buttonAddRule.setOnClickListener(v -> {
-            IntentHelper.get().openRuleDetails(this, -1);
+            IntentHelper.get().createNewRule(this, knowledgeBaseId);
         });
     }
 
@@ -92,6 +95,6 @@ public class KnowledgeBaseDetailsActivity extends BaseActivity implements IKnowl
 
     @Override
     public void openRuleDetails(int ruleId) {
-        IntentHelper.get().openRuleDetails(this, ruleId);
+        IntentHelper.get().openRuleDetails(this, knowledgeBaseId, ruleId);
     }
 }

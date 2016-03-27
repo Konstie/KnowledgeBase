@@ -32,8 +32,15 @@ public class IntentHelper {
         context.startActivity(new Intent(context, NewKnowledgeBaseActivity.class));
     }
 
-    public void openRuleDetails(Context context, int ruleId) {
+    public void createNewRule(Context context, int baseId) {
         Intent ruleDetailsIntent = new Intent(context, RuleDetailsActivity.class);
+        ruleDetailsIntent.putExtra(Constants.EXTRA_KNOWLEDGE_BASE_ID, baseId);
+        context.startActivity(ruleDetailsIntent);
+    }
+
+    public void openRuleDetails(Context context, int baseId, int ruleId) {
+        Intent ruleDetailsIntent = new Intent(context, RuleDetailsActivity.class);
+        ruleDetailsIntent.putExtra(Constants.EXTRA_KNOWLEDGE_BASE_ID, baseId);
         ruleDetailsIntent.putExtra(Constants.EXTRA_RULE_ID, ruleId);
         context.startActivity(ruleDetailsIntent);
     }

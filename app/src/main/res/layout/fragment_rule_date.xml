@@ -16,6 +16,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_toEndOf="@id/btn_swipe_left"
             android:layout_toRightOf="@id/btn_swipe_left"
             android:layout_marginLeft="4dp"

@@ -1,19 +1,21 @@
 package com.app.knowledgebase.models;
 
+import java.io.Serializable;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class Condition extends RealmObject {
-    @PrimaryKey private String uniqueId;
+public class Condition extends RealmObject implements Serializable {
+    @PrimaryKey private long id;
     private int positionInRule;
     private ConditionPart conditionItem;
 
-    public String getUniqueId() {
-        return uniqueId;
+    public long getId() {
+        return id;
     }
 
-    public void setUniqueId(String uniqueId) {
-        this.uniqueId = uniqueId;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public int getPositionInRule() {

@@ -1,50 +1,62 @@
 package com.app.knowledgebase.ui.sections.rules;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.app.knowledgebase.R;
 import com.app.knowledgebase.constants.Constants;
+import com.app.knowledgebase.dao.FactsDao;
+import com.app.knowledgebase.dao.RulesDao;
+import com.app.knowledgebase.events.RuleDateSetEvent;
+import com.app.knowledgebase.events.RuleResultSetEvent;
 import com.app.knowledgebase.events.SwipedRulePanelEvent;
 import com.app.knowledgebase.helpers.IdHelper;
-import com.app.knowledgebase.models.KnowledgeBase;
+import com.app.knowledgebase.models.Condition;
+import com.app.knowledgebase.models.Fact;
+import com.app.knowledgebase.models.Rule;
 import com.app.knowledgebase.ui.sections.abs.BaseActivity;
 import com.app.knowledgebase.ui.sections.rules.adapters.ConditionsAdapter;
+import com.app.knowledgebase.ui.sections.rules.adapters.RuleInfoPagerAdapter;
 import com.app.knowledgebase.ui.sections.rules.fragments.EditConditionDialogFragment;
 import com.app.knowledgebase.ui.sections.rules.presenters.AddRulePresenter;
-import com.app.knowledgebase.ui.sections.rules.presenters.ConditionOperators;
 import com.app.knowledgebase.ui.sections.rules.presenters.IAddRuleView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.realm.RealmList;
 
 public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
     private static final int PAGE_RESULT = 0;
     private static final int PAGE_DATE = 1;
 
-    private int newRulePosition;
-    private String knowledgeBaseName;
-    private String ruleUniqueId;
+    private boolean newRule = true;
+    private int baseId = -1;
+    private int ruleId = -1;
+    private Date currentRuleDate;
+    private Rule currentRule;
+    private Fact resultFact;
+    private RealmList<Condition> conditionList;
 
     private AddRulePresenter presenter;
-    private ConditionsAdapter adapter;
+    private ConditionsAdapter conditionsAdapter;
+    private RuleInfoPagerAdapter ruleInfoPagerAdapter;
 
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.pager_rule_main_info) ViewPager panelPager;
     @Bind(R.id.list_facts) ListView listConditions;
-    @Bind(R.id.btn_add_rule) FloatingActionButton buttonAddRule;
+    @Bind(R.id.btn_add_rule) FloatingActionButton buttonSaveRule;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,30 +66,46 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
         setToolbar(toolbar, R.string.rule_category, true);
 
         if (getIntent() != null) {
-            newRulePosition = getIntent().getIntExtra(KEY_RULE_POSITION_IN_BASE, -1);
-            knowledgeBaseName = getIntent().getStringExtra(KEY_KNOWLEDGE_BASE_NAME);
-            ruleUniqueId = IdHelper.get().getNewRuleId(knowledgeBaseName, newRulePosition);
+            ruleId = getIntent().getIntExtra(Constants.EXTRA_RULE_ID, -1);
+            baseId = getIntent().getIntExtra(Constants.EXTRA_KNOWLEDGE_BASE_ID, -1);
         }
 
         presenter = new AddRulePresenter(this, this);
+        currentRule = presenter.getCurrentRule(ruleId);
+        currentRuleDate = (currentRule == null || currentRule.getDateAdded() == null) ? new Date(System.currentTimeMillis()) : currentRule.getDateAdded();
 
-//        adapter = new ConditionsAdapter(this, presenter.get);
-        listConditions.setAdapter(adapter);
-        View listFooter = getLayoutInflater().inflate(R.layout.footer_add_condition, null, false);
-        listFooter.findViewById(R.id.btn_add_condition).setOnClickListener(v -> {
-            presenter.onAddConditionClicked();
-        });
-        listConditions.addFooterView(listFooter);
+        if (currentRule == null) {
+            RulesDao.get().createNewRule(presenter.getDatabase());
+            currentRule = presenter.getLastCreatedRule();
+            ruleId = currentRule.getId();
+        } else {
+            newRule = false;
+        }
 
-        buttonAddRule.setOnClickListener(v -> {
-            presenter.onAddRuleClicked();
+        presenter.onConditionsInitialized(ruleId);
+        buttonSaveRule.setOnClickListener(v -> {
+            presenter.onSaveRuleClicked(baseId, ruleId, conditionList, resultFact, currentRuleDate);
         });
+
+        setupRuleConfigPager();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        conditionsAdapter.notifyDataSetChanged();
+    }
+
+    private void setupRuleConfigPager() {
+        ruleInfoPagerAdapter = new RuleInfoPagerAdapter(getSupportFragmentManager(), currentRule);
+        panelPager.setAdapter(ruleInfoPagerAdapter);
+        panelPager.setCurrentItem(PAGE_RESULT);
     }
 
     @Subscribe
@@ -89,6 +117,16 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
         }
     }
 
+    @Subscribe
+    public void onDateChanged(RuleDateSetEvent event) {
+        currentRuleDate = event.getRuleDate();
+    }
+
+    @Subscribe
+    public void onResultFactSet(RuleResultSetEvent event) {
+        resultFact = FactsDao.get().findFactByDescription(presenter.getDatabase(), event.getResultFact());
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -96,16 +134,40 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
     }
 
     @Override
-    public void addNewCondition() {
-        int currentConditionPos = adapter.getCount();
-//        String conditionUniqueId = IdHelper.get().getNewConditionId(ruleUniqueId, conditions.size());
-//        EditConditionDialogFragment
-//                .newInstance(conditionUniqueId, currentConditionPos, ConditionOperators.NONE, "")
-//                .show(getSupportFragmentManager(), "");
+    public void setupConditionsForRule(RealmList<Condition> conditions) {
+        View listFooter = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+                .inflate(R.layout.footer_add_condition, null, false);
+        ImageButton buttonAddCondition = (ImageButton) listFooter.findViewById(R.id.btn_add_condition);
+        buttonAddCondition.setOnClickListener(v -> presenter.onAddConditionClicked());
+        listConditions.addFooterView(listFooter);
+
+        conditionList = conditions;
+        conditionsAdapter = new ConditionsAdapter(this, conditionList.where().findAll(), true);
+        listConditions.setAdapter(conditionsAdapter);
+        listConditions.setOnItemClickListener((parent, view, position, id) -> {
+            presenter.onEditConditionClicked(position);
+        });
     }
 
     @Override
-    public void addNewRule() {
+    public void addNewCondition() {
+        int currentConditionPos = conditionsAdapter.getCount();
+        openConditionDialog(null, currentConditionPos);
+    }
 
+    @Override
+    public void onEditCondition(int position) {
+        openConditionDialog(conditionList.get(position), position);
+    }
+
+    private void openConditionDialog(Condition condition, int position) {
+        EditConditionDialogFragment
+                .newInstance(condition, ruleId, position)
+                .show(getSupportFragmentManager(), "");
+    }
+
+    @Override
+    public void onSaveThisRule() {
+        onBackPressed();
     }
 }

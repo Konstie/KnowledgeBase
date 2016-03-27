@@ -40,7 +40,7 @@ public class FactsListPresenter extends BasePresenter implements IFactsListPrese
 
     @Override
     public void onSaveFactClicked(Fact fact, String newDescription) {
-        Fact factToUpdate = FactsDao.get().findFactByDescription(database, newDescription);
+        Fact factToUpdate = FactsDao.get().findFactByDescription(database, fact.getDescription());
         FactsDao.get().updateFact(database, factToUpdate, newDescription);
     }
 

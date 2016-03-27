@@ -5,14 +5,16 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Spinner;
 
 import com.app.knowledgebase.R;
+import com.app.knowledgebase.dao.ConditionsDao;
+import com.app.knowledgebase.models.Condition;
 import com.app.knowledgebase.ui.sections.abs.BaseDialogFragment;
-import com.app.knowledgebase.ui.sections.rules.presenters.ConditionOperators;
 import com.app.knowledgebase.ui.sections.rules.presenters.EditConditionPresenter;
 
 import java.util.List;
@@ -21,15 +23,16 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class EditConditionDialogFragment extends BaseDialogFragment {
-    private static final String EXTRA_CONDITION_OPERATOR = "EXTRA_CONDITION_OPERATOR";
-    private static final String EXTRA_CONDITION_FACT = "EXTRA_CONDITION_FACT";
-    private static final String EXTRA_CONDITION_UNIQUE_ID = "EXTRA_CONDITION_UNIQUE_ID";
+    private static final String EXTRA_CONDITION = "EXTRA_CONDITION";
+    private static final String EXTRA_RULE_ID = "EXTRA_RULE_ID";
     private static final String EXTRA_CONDITION_POS_IN_RULE = "EXTRA_CONDITION_POS_IN_RULE";
 
-    private int conditionPosInRule;
-    private String conditionUniqueId = "";
-    private String newConditionOperator = ConditionOperators.NONE;
-    private String newFactSelection = "";
+    private boolean newCondition = true;
+    private int ruleId;
+    private int positionInRule;
+    private String newFactSelection;
+    private String newConditionOperator;
+    private Condition currentCondition;
 
     private EditConditionPresenter presenter;
 
@@ -38,13 +41,12 @@ public class EditConditionDialogFragment extends BaseDialogFragment {
     @Bind(R.id.btn_save) Button buttonSaveCondition;
     @Bind(R.id.btn_cancel) Button buttonCancel;
 
-    public static EditConditionDialogFragment newInstance(String uniqueId, int positionInRule, String conditionOperator, String conditionTitle) {
+    public static EditConditionDialogFragment newInstance(Condition currentCondition, int ruleId, int positionInRule) {
         EditConditionDialogFragment dialog = new EditConditionDialogFragment();
         Bundle args = new Bundle();
-        args.putString(EXTRA_CONDITION_UNIQUE_ID, uniqueId);
+        args.putSerializable(EXTRA_CONDITION, currentCondition);
+        args.putInt(EXTRA_RULE_ID, ruleId);
         args.putInt(EXTRA_CONDITION_POS_IN_RULE, positionInRule);
-        args.putString(EXTRA_CONDITION_FACT, conditionTitle);
-        args.putString(EXTRA_CONDITION_OPERATOR, conditionOperator);
         dialog.setArguments(args);
         return dialog;
     }
@@ -55,11 +57,16 @@ public class EditConditionDialogFragment extends BaseDialogFragment {
         presenter = new EditConditionPresenter(getContext());
 
         if (getArguments() != null) {
-            conditionPosInRule = getArguments().getInt(EXTRA_CONDITION_POS_IN_RULE);
-            conditionUniqueId = getArguments().getString(EXTRA_CONDITION_UNIQUE_ID);
+            ruleId = getArguments().getInt(EXTRA_RULE_ID);
+            currentCondition = (Condition) getArguments().getSerializable(EXTRA_CONDITION);
+            positionInRule = getArguments().getInt(EXTRA_CONDITION_POS_IN_RULE);
+            if (currentCondition != null) newCondition = false;
+        }
 
-            newFactSelection = getArguments().getString(EXTRA_CONDITION_FACT);
-            newConditionOperator = getArguments().getString(EXTRA_CONDITION_OPERATOR);
+        if (currentCondition == null) {
+            ConditionsDao.get().createNewCondition(presenter.getDatabase());
+            currentCondition = presenter.getLastCreatedCondition();
+            newCondition = true;
         }
     }
 
@@ -71,10 +78,10 @@ public class EditConditionDialogFragment extends BaseDialogFragment {
 
         List<String> allFacts = presenter.getAllFactsInText();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
-                android.R.layout.simple_dropdown_item_1line, presenter.getAllFactsInText()
+                R.layout.item_facts_autocomplete, presenter.getAllFactsInText()
         );
         textCondition.setAdapter(adapter);
-        textCondition.setListSelection(allFacts.indexOf(conditionUniqueId));
+
         newFactSelection = textCondition.getText().toString();
         textCondition.setOnItemClickListener((parent, view, position, id) -> {
             newFactSelection = (String) parent.getItemAtPosition(position);
@@ -82,13 +89,35 @@ public class EditConditionDialogFragment extends BaseDialogFragment {
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, presenter.getConditionOperators());
         editConditionOperatorSpinner.setAdapter(spinnerAdapter);
-        editConditionOperatorSpinner.setSelection(presenter.getConditionOperators().indexOf(newConditionOperator));
-        editConditionOperatorSpinner.setOnItemClickListener((parent, view, position, id) ->
-                newConditionOperator = presenter.getConditionOperators().get(position)
-        );
+        if (!newCondition) {
+            textCondition.setListSelection(allFacts.indexOf(currentCondition.getConditionItem().getConditionFact().getDescription()));
+            newConditionOperator = currentCondition.getConditionItem().getConditionOperator();
+            editConditionOperatorSpinner.setSelection(presenter.getConditionOperators().indexOf(newConditionOperator));
+        } else {
+            textCondition.setListSelection(0);
+            editConditionOperatorSpinner.setSelection(0);
+            newConditionOperator = editConditionOperatorSpinner.getSelectedItem().toString();
+        }
+
+        editConditionOperatorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                newConditionOperator = presenter.getConditionOperators().get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         buttonSaveCondition.setOnClickListener(v -> {
-            presenter.onSaveNewConditionClicked(conditionPosInRule, conditionUniqueId, newConditionOperator, newFactSelection);
+            if (newCondition) {
+                presenter.onSaveNewConditionClicked(ruleId, positionInRule, newConditionOperator, textCondition.getText().toString());
+            } else {
+                presenter.onUpdateNewConditionClicked(currentCondition.getId(), ruleId, positionInRule, newConditionOperator, textCondition.getText().toString());
+            }
+            EditConditionDialogFragment.this.dismissAllowingStateLoss();
         });
 
         buttonCancel.setOnClickListener(v -> dismissDialog());

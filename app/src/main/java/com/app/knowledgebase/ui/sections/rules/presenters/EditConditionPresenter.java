@@ -5,6 +5,7 @@ import android.content.Context;
 import com.app.knowledgebase.dao.ConditionsDao;
 import com.app.knowledgebase.dao.FactsDao;
 import com.app.knowledgebase.dao.RulesDao;
+import com.app.knowledgebase.helpers.IdHelper;
 import com.app.knowledgebase.models.Condition;
 import com.app.knowledgebase.models.ConditionPart;
 import com.app.knowledgebase.models.Fact;
@@ -27,7 +28,7 @@ public class EditConditionPresenter extends BasePresenter implements IEditCondit
         super(context);
         database = getDatabase();
         conditionOperators = new ArrayList<>(
-                Arrays.asList(ConditionOperators.NONE, ConditionOperators.OR, ConditionOperators.AND)
+                Arrays.asList(ConditionOperators.OR, ConditionOperators.AND)
         );
     }
 
@@ -37,22 +38,51 @@ public class EditConditionPresenter extends BasePresenter implements IEditCondit
     }
 
     @Override
-    public void onSaveNewConditionClicked(int positionInRule, String conditionId, String newOperator, String newFact) {
+    public Condition getLastCreatedCondition() {
+        return ConditionsDao.get().getLastCreatedCondition(getDatabase());
+    }
+
+    @Override
+    public void onSaveNewConditionClicked(int ruleId, int positionInRule, String newOperator, String newFact) {
+        Fact conditionFact;
+        if (FactsDao.get().findFactByDescription(getDatabase(), newFact) != null) {
+            conditionFact = FactsDao.get().findFactByDescription(getDatabase(), newFact);
+        } else {
+            conditionFact = FactsDao.get().createFact(getDatabase(), newFact);
+        }
+
         database.executeTransaction(realm -> {
-//            Condition newCondition = database.createObject(Condition.class);
-//            ConditionPart conditionPart = database.createObject(ConditionPart.class);
-//            conditionPart.setUniqueId(conditionId + "#" + 0);
-//            conditionPart.setConditionOperator(newOperator);
-//            conditionPart.setConditionFact(newFact);
-//            newCondition.setConditionItem(conditionPart);
-//            newCondition.setPositionInRule(positionInRule);
-//            newCondition.setUniqueId(conditionId);
-//
-//            Rule ruleToEdit = RulesDao.get().findRuleByUniqueId(
-//                    database, conditionId.substring(0, conditionId.indexOf("#", conditionId.indexOf("#") + 1))
-//            );
-//            RealmList<Condition> conditions = ruleToEdit.getConditions();
-//            conditions.add(newCondition);
+            Condition newCondition = database.createObject(Condition.class);
+            ConditionPart conditionPart = database.createObject(ConditionPart.class);
+            conditionPart.setId(IdHelper.get().getGeneratedUniqueIdForConditionPart(getDatabase()));
+            conditionPart.setConditionOperator(newOperator);
+
+            conditionPart.setConditionFact(conditionFact);
+            newCondition.setConditionItem(conditionPart);
+            newCondition.setPositionInRule(positionInRule);
+            newCondition.setId(IdHelper.get().getGeneratedUniqueIdForCondition(getDatabase()));
+
+            Rule ruleToEdit = RulesDao.get().findRuleByUniqueId(database, ruleId);
+            RealmList<Condition> conditions = ruleToEdit.getConditions();
+            conditions.add(newCondition);
+        });
+    }
+
+    @Override
+    public void onUpdateNewConditionClicked(long conditionId, int ruleId, int positionInRule, String newOperator, String newFact) {
+        database.executeTransaction(realm -> {
+            Condition conditionToUpdate = ConditionsDao.get().findConditionById(getDatabase(), conditionId);
+            ConditionPart conditionPart = database.createObject(ConditionPart.class);
+            conditionPart.setId(IdHelper.get().getGeneratedUniqueIdForConditionPart(getDatabase()));
+            conditionPart.setConditionOperator(newOperator);
+            Fact conditionFact;
+            if (FactsDao.get().findFactByDescription(getDatabase(), newFact) != null) {
+                conditionFact = FactsDao.get().findFactByDescription(getDatabase(), newFact);
+            } else {
+                conditionFact = FactsDao.get().createFact(getDatabase(), newFact);
+            }
+            conditionPart.setConditionFact(conditionFact);
+            conditionToUpdate.setConditionItem(conditionPart);
         });
     }
 

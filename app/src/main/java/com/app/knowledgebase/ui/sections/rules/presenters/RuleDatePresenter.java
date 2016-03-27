@@ -1,18 +1,22 @@
 package com.app.knowledgebase.ui.sections.rules.presenters;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.app.knowledgebase.dao.RulesDao;
 import com.app.knowledgebase.models.Rule;
 import com.app.knowledgebase.ui.sections.abs.presenter.BasePresenter;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import io.realm.Realm;
 
 public class RuleDatePresenter extends BasePresenter implements IRuleDatePresenter {
     private IRuleDateView ruleDateView;
+    private Date ruleDate;
     private Rule currentRule;
 
     public RuleDatePresenter(Context context, IRuleDateView ruleDateView, Rule currentRule) {
@@ -26,18 +30,24 @@ public class RuleDatePresenter extends BasePresenter implements IRuleDatePresent
         ruleDateView.showDatePickerDialog();
     }
 
+    public void setInitialDateForRule() {
+        ruleDate = (currentRule == null) ? Calendar.getInstance().getTime() : currentRule.getDateAdded();
+    }
+
     @Override
-    public void saveDateForRule(int year, int monthOfYear, int dayOfMonth) {
-        Realm database = getDatabase();
-        database.executeTransaction(realm -> {
-//            Rule ruleToChange = RulesDao.get().findRuleByIdAndKnowledgeBaseId(
-//                    database, currentRule.getId(), currentRule.getKnowledgeBase().getTitle()
-//            );
-//            ruleToChange.setDateAdded(new Date(year, monthOfYear, dayOfMonth));
-        });
+    public void saveNewDateForRule(int year, int monthOfYear, int dayOfMonth) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.set(year, monthOfYear, dayOfMonth);
+        ruleDate = calendar.getTime();
+    }
+
+    public Date getRuleDate() {
+        return ruleDate;
     }
 
     public String getFormattedDate() {
-        return new SimpleDateFormat("dd-MM-yyyy").format(currentRule.getDateAdded());
+        Date currentDate = (ruleDate == null) ? Calendar.getInstance().getTime() : ruleDate;
+        return new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH).format(currentDate);
     }
 }

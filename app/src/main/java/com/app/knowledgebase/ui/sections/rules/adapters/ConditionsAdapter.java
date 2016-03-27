@@ -4,11 +4,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.app.knowledgebase.R;
 import com.app.knowledgebase.models.Condition;
+import com.app.knowledgebase.ui.sections.rules.presenters.AddRulePresenter;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -16,14 +17,20 @@ import io.realm.RealmBaseAdapter;
 import io.realm.RealmResults;
 
 public class ConditionsAdapter extends RealmBaseAdapter<Condition> {
-    public ConditionsAdapter(Context context, RealmResults<Condition> realmResults, boolean automaticUpdate) {
-        super(context, realmResults, automaticUpdate);
+    private RealmResults<Condition> conditions;
+    private AddRulePresenter presenter;
+
+    public ConditionsAdapter(Context context, RealmResults<Condition> conditions, boolean autoUpdate) {
+        super(context, conditions, autoUpdate);
+        this.conditions = conditions;
+        presenter = new AddRulePresenter(context, null);
     }
 
     static class ConditionHolder {
         @Bind(R.id.text_fact_pos) TextView textFactPosition;
         @Bind(R.id.text_condition_operator) TextView textOperator;
         @Bind(R.id.text_condition_fact) TextView textFact;
+        @Bind(R.id.btn_remove) ImageButton buttonRemove;
 
         public ConditionHolder(View view) {
             ButterKnife.bind(this, view);
@@ -32,12 +39,12 @@ public class ConditionsAdapter extends RealmBaseAdapter<Condition> {
 
     @Override
     public Condition getItem(int i) {
-        return realmResults.get(i);
+        return conditions.get(i);
     }
 
     @Override
     public int getCount() {
-        return realmResults.size();
+        return conditions.size();
     }
 
     @Override
@@ -65,7 +72,11 @@ public class ConditionsAdapter extends RealmBaseAdapter<Condition> {
             holder.textOperator.setVisibility(View.GONE);
         }
 
-        holder.textFact.setText(currentCondition.getConditionItem().getConditionFact());
+        holder.textFact.setText(currentCondition.getConditionItem().getConditionFact().getDescription());
+        holder.buttonRemove.setOnClickListener(v -> {
+            presenter.onRemoveConditionClicked(currentCondition.getId());
+            notifyDataSetChanged();
+        });
 
         return convertView;
     }

@@ -1,6 +1,5 @@
 package com.app.knowledgebase.ui.sections.rules.fragments;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.app.knowledgebase.R;
+import com.app.knowledgebase.events.RuleDateSetEvent;
 import com.app.knowledgebase.events.SwipedRulePanelEvent;
 import com.app.knowledgebase.models.Rule;
 import com.app.knowledgebase.ui.sections.rules.SwipeDirection;
@@ -58,9 +58,10 @@ public class RuleDateFragment extends Fragment implements IRuleDateView {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_rule_result, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_rule_date, container, false);
         ButterKnife.bind(this, rootView);
 
+        presenter.setInitialDateForRule();
         textDate.setText(presenter.getFormattedDate());
 
         buttonSwipeLeft.setOnClickListener(v -> {
@@ -83,8 +84,9 @@ public class RuleDateFragment extends Fragment implements IRuleDateView {
             date.set(Calendar.MONTH, monthOfYear);
             date.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-            presenter.saveDateForRule(year, monthOfYear, dayOfMonth);
+            presenter.saveNewDateForRule(year, monthOfYear, dayOfMonth);
             textDate.setText(presenter.getFormattedDate());
+            EventBus.getDefault().post(new RuleDateSetEvent(presenter.getRuleDate()));
         };
 
         CalendarDatePickerDialogFragment.OnDialogDismissListener dismissListener = dialoginterface -> {

@@ -1,6 +1,8 @@
 package com.app.knowledgebase.dao;
 
+import com.app.knowledgebase.helpers.IdHelper;
 import com.app.knowledgebase.models.Condition;
+import com.app.knowledgebase.models.Rule;
 
 import java.util.List;
 
@@ -20,6 +22,19 @@ public class ConditionsDao {
         return instance;
     }
 
+    public void createNewCondition(Realm database) {
+        database.executeTransaction(realm -> {
+            Condition condition = database.createObject(Condition.class);
+            condition.setId(IdHelper.get().getGeneratedUniqueIdForCondition(database));
+        });
+    }
+
+    public Condition findConditionById(Realm database, long id) {
+        RealmQuery<Condition> query = database.where(Condition.class);
+        query.equalTo("id", id);
+        return query.findFirst();
+    }
+
     public Condition findConditionByPositionInKnowledgeBase(Realm database, String knowledgeBaseName, int position) {
         RealmQuery<Condition> query = database.where(Condition.class);
         query
@@ -27,10 +42,9 @@ public class ConditionsDao {
                 .equalTo("positionInRule", position);
         return query.findFirstAsync();
     }
-//
-//    public RealmResults<Condition> findAllConditionsForRule(Realm database, int ruleId) {
-//        RealmQuery<Condition> query = database.where(Condition.class);
-////        query
-////                .equalTo("")
-//    }
+
+    public Condition getLastCreatedCondition(Realm database) {
+        long lastId = database.where(Rule.class).max("id").longValue();
+        return findConditionById(database, lastId);
+    }
 }

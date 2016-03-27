@@ -24,7 +24,5 @@
 
     <style name="App.Theme.DialogTransparentStyle" parent="android:style/Theme.Translucent">
         <item name="android:windowNoTitle">true</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:textColor">@android:color/black</item>
     </style>
 </resources>

@@ -4,16 +4,16 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class ConditionPart extends RealmObject {
-    @PrimaryKey private String uniqueId;
+    @PrimaryKey private int id;
     private String conditionOperator;
-    private String conditionFact;
+    private Fact conditionFact;
 
-    public String getUniqueId() {
-        return uniqueId;
+    public int getId() {
+        return id;
     }
 
-    public void setUniqueId(String uniqueId) {
-        this.uniqueId = uniqueId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getConditionOperator() {
@@ -24,11 +24,11 @@ public class ConditionPart extends RealmObject {
         this.conditionOperator = conditionOperator;
     }
 
-    public String getConditionFact() {
+    public Fact getConditionFact() {
         return conditionFact;
     }
 
-    public void setConditionFact(String conditionFact) {
+    public void setConditionFact(Fact conditionFact) {
         this.conditionFact = conditionFact;
     }
 }

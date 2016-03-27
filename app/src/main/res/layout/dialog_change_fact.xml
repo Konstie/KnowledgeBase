@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:background="@color/colorDialogTransparent"
     android:layout_gravity="center_vertical"
     android:orientation="vertical">
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_corners_white"
+        android:layout_margin="16dp"
+        android:background="@drawable/shadow_dialog"
         android:layout_centerInParent="true">
         <TextView
             android:id="@+id/txtDiaMsg"
@@ -24,6 +25,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/edit_condition_operator"
             android:hint="@string/condition_choose_operator"
+            android:popupBackground="@android:color/white"
             android:layout_below="@id/txtDiaMsg"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
@@ -34,6 +36,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/text_condition"
             android:layout_centerHorizontal="true"
+            android:textColor="@android:color/black"
             android:layout_below="@id/txtDiaMsg"
             android:hint="@string/condition_type_fact"
             android:layout_marginTop="16dp"
