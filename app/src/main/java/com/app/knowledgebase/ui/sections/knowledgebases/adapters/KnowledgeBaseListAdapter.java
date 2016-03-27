@@ -31,7 +31,7 @@ public class KnowledgeBaseListAdapter extends RealmBaseAdapter<KnowledgeBase> {
         KnowledgeBaseHolder holder;
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
-            convertView = inflater.inflate(R.layout.item_condition, parent, false);
+            convertView = inflater.inflate(R.layout.item_knowledge_base, parent, false);
             holder = new KnowledgeBaseHolder(convertView);
             convertView.setTag(holder);
         } else {
@@ -46,10 +46,10 @@ public class KnowledgeBaseListAdapter extends RealmBaseAdapter<KnowledgeBase> {
     private String getFormattedStrategiesText(List<Strategy> strategies) {
         String strategiesText = "";
         for (int i = 0; i < strategies.size(); i++) {
-            if (i > 0) {
+            strategiesText += strategies.get(i).getName();
+            if (i < strategies.size() - 1) {
                 strategiesText += ", ";
             }
-            strategiesText += strategies.get(i);
         }
         return strategiesText;
     }
@@ -60,11 +60,11 @@ public class KnowledgeBaseListAdapter extends RealmBaseAdapter<KnowledgeBase> {
     }
 
     static class KnowledgeBaseHolder {
+        @Bind(R.id.base_title_text) TextView baseTitleTextView;
+        @Bind(R.id.base_title_strategy) TextView baseStrategyTextView;
+
         public KnowledgeBaseHolder(View rootView) {
             ButterKnife.bind(this, rootView);
         }
-
-        @Bind(R.id.base_title_text) TextView baseTitleTextView;
-        @Bind(R.id.base_title_strategy) TextView baseStrategyTextView;
     }
 }

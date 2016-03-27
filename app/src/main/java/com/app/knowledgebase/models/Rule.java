@@ -15,6 +15,7 @@ public class Rule extends RealmObject implements Serializable {
     private Fact resultFact;
     private Date dateAdded;
     private int factsCount;
+    private String description;
 
     public int getId() {
         return id;
@@ -62,5 +63,13 @@ public class Rule extends RealmObject implements Serializable {
 
     public void setFactsCount(int factsCount) {
         this.factsCount = factsCount;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

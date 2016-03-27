@@ -3,6 +3,7 @@ package com.app.knowledgebase.ui.sections.facts.presenter;
 import android.content.Context;
 
 import com.app.knowledgebase.dao.FactsDao;
+import com.app.knowledgebase.helpers.IdHelper;
 import com.app.knowledgebase.models.Fact;
 import com.app.knowledgebase.ui.sections.abs.presenter.BasePresenter;
 
@@ -54,6 +55,7 @@ public class FactsListPresenter extends BasePresenter implements IFactsListPrese
         database.beginTransaction();
 
         Fact fact = database.createObject(Fact.class);
+        fact.setId(IdHelper.get().getGeneratedUniqueIdForFact(getDatabase()));
         fact.setDescription(factDescription);
 
         database.commitTransaction();

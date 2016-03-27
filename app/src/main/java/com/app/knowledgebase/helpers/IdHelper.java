@@ -1,6 +1,10 @@
 package com.app.knowledgebase.helpers;
 
 import com.app.knowledgebase.constants.Constants;
+import com.app.knowledgebase.models.Fact;
+import com.app.knowledgebase.models.IteratedFact;
+import com.app.knowledgebase.models.KnowledgeBase;
+import com.app.knowledgebase.models.Strategy;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
@@ -29,12 +33,23 @@ public class IdHelper {
         return knowledgeBaseName + Constants.DIVIDER + KEY_RULE + position;
     }
 
-    public String getNewConditionId(String ruleId, int positionInRule) {
-        return ruleId + Constants.DIVIDER + KEY_CONDITION + positionInRule;
+    public int getGeneratedUniqueIdForStrategy(Realm database) {
+        return (database.where(Strategy.class).findAll().size() > 0)
+                ? database.where(Strategy.class).max("uniqueId").intValue() + 1 : 0;
     }
 
-    public int getGeneratedUniqueId(Realm database, Class<? extends RealmObject> itemType) {
-        return (database.where(itemType).findAll().size() > 0)
-                ? database.where(itemType).max("id").intValue() + 1 : 0;
+    public int getGeneratedUniqueIdForIteratedFact(Realm database) {
+        return (database.where(IteratedFact.class).findAll().size() > 0)
+                ? database.where(IteratedFact.class).max("uniqueId").intValue() + 1 : 0;
+    }
+
+    public int getGeneratedUniqueIdForFact(Realm database) {
+        return (database.where(Fact.class).findAll().size() > 0)
+                ? database.where(Fact.class).max("id").intValue() + 1 : 0;
+    }
+
+    public int getGeneratedUniqueIdForKnowledgeBase(Realm database) {
+        return (database.where(KnowledgeBase.class).findAll().size() > 0)
+                ? database.where(KnowledgeBase.class).max("id").intValue() + 1 : 0;
     }
 }

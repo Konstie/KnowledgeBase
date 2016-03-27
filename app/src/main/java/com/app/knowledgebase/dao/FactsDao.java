@@ -1,6 +1,8 @@
 package com.app.knowledgebase.dao;
 
+import com.app.knowledgebase.helpers.IdHelper;
 import com.app.knowledgebase.models.Fact;
+import com.app.knowledgebase.models.IteratedFact;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,13 +25,23 @@ public class FactsDao {
         return instance;
     }
 
+    public Fact findFactById(Realm database, long id) {
+        RealmQuery<Fact> query = database.where(Fact.class);
+        query.equalTo("id", id);
+        return query.findFirst();
+    }
+
     public Fact findFactByDescription(Realm database, String descriptionQuery) {
         RealmQuery<Fact> query = database.where(Fact.class);
         query.equalTo("description", descriptionQuery);
         return query.findFirst();
     }
 
-    public List<String> getAllFacts(Realm realm) {
+    public RealmResults<Fact> findAllFacts(Realm database) {
+        return database.where(Fact.class).findAll();
+    }
+
+    private List<String> getAllFacts(Realm realm) {
         RealmResults<Fact> allFacts = realm.where(Fact.class).findAll();
         List<String> allFactsStrings = new ArrayList<>();
         for (Fact fact : allFacts) {
@@ -52,5 +64,15 @@ public class FactsDao {
         List<String> allFacts = getAllFacts(database);
         Collections.sort(allFacts);
         return allFacts;
+    }
+
+    public IteratedFact createIteratedFact(Realm database, Fact fact, boolean activated) {
+        database.beginTransaction();
+        IteratedFact newIteratedFact = database.createObject(IteratedFact.class);
+        newIteratedFact.setUniqueId(IdHelper.get().getGeneratedUniqueIdForIteratedFact(database));
+        newIteratedFact.setFact(fact);
+        newIteratedFact.setActivated(activated);
+        database.commitTransaction();
+        return newIteratedFact;
     }
 }

@@ -39,20 +39,20 @@ public class EditConditionPresenter extends BasePresenter implements IEditCondit
     @Override
     public void onSaveNewConditionClicked(int positionInRule, String conditionId, String newOperator, String newFact) {
         database.executeTransaction(realm -> {
-            Condition newCondition = database.createObject(Condition.class);
-            ConditionPart conditionPart = database.createObject(ConditionPart.class);
-            conditionPart.setUniqueId(conditionId + "#" + 0);
-            conditionPart.setConditionOperator(newOperator);
-            conditionPart.setConditionFact(newFact);
-            newCondition.setConditionItem(conditionPart);
-            newCondition.setPositionInRule(positionInRule);
-            newCondition.setUniqueId(conditionId);
-
-            Rule ruleToEdit = RulesDao.get().findRuleByUniqueId(
-                    database, conditionId.substring(0, conditionId.indexOf("#", conditionId.indexOf("#") + 1))
-            );
-            RealmList<Condition> conditions = ruleToEdit.getConditions();
-            conditions.add(newCondition);
+//            Condition newCondition = database.createObject(Condition.class);
+//            ConditionPart conditionPart = database.createObject(ConditionPart.class);
+//            conditionPart.setUniqueId(conditionId + "#" + 0);
+//            conditionPart.setConditionOperator(newOperator);
+//            conditionPart.setConditionFact(newFact);
+//            newCondition.setConditionItem(conditionPart);
+//            newCondition.setPositionInRule(positionInRule);
+//            newCondition.setUniqueId(conditionId);
+//
+//            Rule ruleToEdit = RulesDao.get().findRuleByUniqueId(
+//                    database, conditionId.substring(0, conditionId.indexOf("#", conditionId.indexOf("#") + 1))
+//            );
+//            RealmList<Condition> conditions = ruleToEdit.getConditions();
+//            conditions.add(newCondition);
         });
     }
 

@@ -25,6 +25,38 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.sections.knowledgebases.KnowledgeBasesListActivity" />
+        </activity>
+
+        <activity
+            android:name=".ui.sections.facts.FactsListActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.sections.knowledgebases.KnowledgeBasesListActivity" />
+        </activity>
+
+        <activity
+            android:name=".ui.sections.knowledgebases.KnowledgeBaseDetailsActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.sections.knowledgebases.KnowledgeBasesListActivity" />
+        </activity>
+
+        <activity
+            android:name=".ui.sections.knowledgebases.KnowledgeBaseResultActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.sections.knowledgebases.KnowledgeBasesListActivity" />
         </activity>
     </application>
 

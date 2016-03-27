@@ -14,6 +14,6 @@ public class RuleResultPresenter extends BasePresenter implements IRuleResultPre
 
     @Override
     public List<String> getPossibleResultFactsList() {
-        return FactsDao.get().getAllFacts(getDatabase());
+        return FactsDao.get().getAllSortedFactsInText(getDatabase());
     }
 }

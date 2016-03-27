@@ -23,4 +23,13 @@ public abstract class BaseActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(isHomeEnabled);
         }
     }
+
+    protected void setToolbar(Toolbar toolbar, String title, boolean isHomeEnabled) {
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(title);
+            actionBar.setDisplayHomeAsUpEnabled(isHomeEnabled);
+        }
+    }
 }

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/toolbar"
-        android:background="@color/colorPrimary">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:popupTheme="@style/AppTheme.PopupOverlay">
     </android.support.v7.widget.Toolbar>
 
     <View
@@ -42,11 +43,19 @@
         android:layout_below="@id/input_layout_base_name">
     </com.app.knowledgebase.ui.views.MultiSelectionSpinner>
 
+    <com.app.knowledgebase.ui.views.MultiSelectionSpinner
+        android:layout_margin="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/start_facts_spinner"
+        android:layout_below="@id/strategies_spinner">
+    </com.app.knowledgebase.ui.views.MultiSelectionSpinner>
+
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btn_add_base"
-        android:src="@mipmap/ic_action_add_fab"
+        android:src="@mipmap/ic_action_save_base"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />

@@ -56,7 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/list_view_facts"
-        android:layout_above="@id/layout_add_fact"
+        android:layout_above="@id/panel_shadow"
         android:layout_below="@id/toolbar">
     </ListView>
 </RelativeLayout>

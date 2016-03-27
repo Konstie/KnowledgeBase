@@ -6,5 +6,6 @@ import io.realm.RealmResults;
 
 public interface IConflictsListView {
     void fillConflictsList(RealmResults<KnowledgeBase> knowledgeBases);
+    void showKnowledgeBaseMenu();
     void addNewBase();
 }

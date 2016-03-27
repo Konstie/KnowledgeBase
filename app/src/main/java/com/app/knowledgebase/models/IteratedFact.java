@@ -4,15 +4,15 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class IteratedFact extends RealmObject {
-    @PrimaryKey private String uniqueId;
+    @PrimaryKey private int uniqueId;
     private Fact fact;
     private boolean activated;
 
-    public String getUniqueId() {
+    public int getUniqueId() {
         return uniqueId;
     }
 
-    public void setUniqueId(String uniqueId) {
+    public void setUniqueId(int uniqueId) {
         this.uniqueId = uniqueId;
     }
 

@@ -7,9 +7,13 @@
     tools:showIn="@layout/activity_bases_list"
     tools:context=".BasesListActivity">
 
-    <ListView
+    <GridView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/knowledge_bases_list_view">
-    </ListView>
+        android:layout_height="wrap_content"
+        android:id="@+id/rules_list_view"
+        android:drawSelectorOnTop="true"
+        android:verticalSpacing="5dp"
+        android:focusable="true"
+        android:clickable="true">
+    </GridView>
 </RelativeLayout>

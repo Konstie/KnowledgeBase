@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.app.knowledgebase.constants.Constants;
-import com.app.knowledgebase.ui.sections.knowledgebases.KnowledgeBaseActivity;
-import com.app.knowledgebase.ui.sections.knowledgebases.KnowledgeBasesListActivity;
+import com.app.knowledgebase.ui.sections.facts.FactsListActivity;
+import com.app.knowledgebase.ui.sections.knowledgebases.KnowledgeBaseDetailsActivity;
 import com.app.knowledgebase.ui.sections.knowledgebases.NewKnowledgeBaseActivity;
-import com.app.knowledgebase.ui.sections.rules.RulesListActivity;
+import com.app.knowledgebase.ui.sections.rules.RuleDetailsActivity;
 
 public class IntentHelper {
     private static IntentHelper intentHelper;
@@ -21,9 +21,10 @@ public class IntentHelper {
         return intentHelper;
     }
 
-    public void openKnowledgeBaseDetails(Context context, String knowledgeBaseName) {
-        Intent knowledgeBaseDetailsIntent = new Intent(context, KnowledgeBaseActivity.class);
-        knowledgeBaseDetailsIntent.putExtra(Constants.EXTRA_KNOWLEDGE_BASE_NAME, knowledgeBaseName);
+    public void openKnowledgeBaseDetails(Context context, int knowledgeBaseId, String knowledgeBaseName) {
+        Intent knowledgeBaseDetailsIntent = new Intent(context, KnowledgeBaseDetailsActivity.class);
+        knowledgeBaseDetailsIntent.putExtra(Constants.EXTRA_KNOWLEDGE_BASE_ID, knowledgeBaseId);
+        knowledgeBaseDetailsIntent.putExtra(Constants.EXTRA_KNOWLEDGE_BASE_TITLE, knowledgeBaseName);
         context.startActivity(knowledgeBaseDetailsIntent);
     }
 
@@ -31,10 +32,14 @@ public class IntentHelper {
         context.startActivity(new Intent(context, NewKnowledgeBaseActivity.class));
     }
 
-    public void openRuleDetails(Context context, String ruleId) {
-        Intent ruleDetailsIntent = new Intent(context, RulesListActivity.class);
+    public void openRuleDetails(Context context, int ruleId) {
+        Intent ruleDetailsIntent = new Intent(context, RuleDetailsActivity.class);
         ruleDetailsIntent.putExtra(Constants.EXTRA_RULE_ID, ruleId);
         context.startActivity(ruleDetailsIntent);
+    }
+
+    public void openFactsList(Context context) {
+        context.startActivity(new Intent(context, FactsListActivity.class));
     }
 
     public void openConflictResultActivity(Context context, String knowledgeBaseName) {

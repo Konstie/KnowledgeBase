@@ -30,7 +30,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class NewRuleActivity extends BaseActivity implements IAddRuleView {
+public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
     private static final int PAGE_RESULT = 0;
     private static final int PAGE_DATE = 1;
 

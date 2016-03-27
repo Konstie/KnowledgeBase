@@ -24,6 +24,12 @@ public class KnowledgeBaseDao {
         return database.where(KnowledgeBase.class).findAllAsync();
     }
 
+    public KnowledgeBase findKnowledgeBaseById(Realm database, int id) {
+        RealmQuery<KnowledgeBase> query = database.where(KnowledgeBase.class);
+        query.equalTo("id", id);
+        return query.findFirst();
+    }
+
     public KnowledgeBase findKnowledgeBaseByTitle(Realm database, String baseTitle) {
         RealmQuery<KnowledgeBase> query = database.where(KnowledgeBase.class);
         query.equalTo("title", baseTitle);
