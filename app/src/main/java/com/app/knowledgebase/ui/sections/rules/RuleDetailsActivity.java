@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -16,8 +17,8 @@ import com.app.knowledgebase.dao.FactsDao;
 import com.app.knowledgebase.dao.RulesDao;
 import com.app.knowledgebase.events.RuleDateSetEvent;
 import com.app.knowledgebase.events.RuleResultSetEvent;
+import com.app.knowledgebase.events.SaveRuleRequestedEvent;
 import com.app.knowledgebase.events.SwipedRulePanelEvent;
-import com.app.knowledgebase.helpers.IdHelper;
 import com.app.knowledgebase.models.Condition;
 import com.app.knowledgebase.models.Fact;
 import com.app.knowledgebase.models.Rule;
@@ -45,9 +46,7 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
     private int baseId = -1;
     private int ruleId = -1;
     private Date currentRuleDate;
-    private Rule currentRule;
-    private Fact resultFact;
-    private RealmList<Condition> conditionList;
+    private String resultFactTitle;
 
     private AddRulePresenter presenter;
     private ConditionsAdapter conditionsAdapter;
@@ -71,9 +70,9 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
         }
 
         presenter = new AddRulePresenter(this, this);
-        currentRule = presenter.getCurrentRule(ruleId);
-        currentRuleDate = (currentRule == null || currentRule.getDateAdded() == null) ? new Date(System.currentTimeMillis()) : currentRule.getDateAdded();
-
+        Rule currentRule = presenter.getCurrentRule(ruleId);
+        currentRuleDate = (currentRule == null || currentRule.getDateAdded() == null)
+                ? new Date(System.currentTimeMillis()) : currentRule.getDateAdded();
         if (currentRule == null) {
             RulesDao.get().createNewRule(presenter.getDatabase());
             currentRule = presenter.getLastCreatedRule();
@@ -83,11 +82,8 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
         }
 
         presenter.onConditionsInitialized(ruleId);
-        buttonSaveRule.setOnClickListener(v -> {
-            presenter.onSaveRuleClicked(baseId, ruleId, conditionList, resultFact, currentRuleDate);
-        });
 
-        setupRuleConfigPager();
+        setupRuleConfigPager(currentRule.getId());
     }
 
     @Override
@@ -102,8 +98,8 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
         conditionsAdapter.notifyDataSetChanged();
     }
 
-    private void setupRuleConfigPager() {
-        ruleInfoPagerAdapter = new RuleInfoPagerAdapter(getSupportFragmentManager(), currentRule);
+    private void setupRuleConfigPager(int currentRuleId) {
+        ruleInfoPagerAdapter = new RuleInfoPagerAdapter(getSupportFragmentManager(), currentRuleId);
         panelPager.setAdapter(ruleInfoPagerAdapter);
         panelPager.setCurrentItem(PAGE_RESULT);
     }
@@ -117,22 +113,6 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
         }
     }
 
-    @Subscribe
-    public void onDateChanged(RuleDateSetEvent event) {
-        currentRuleDate = event.getRuleDate();
-    }
-
-    @Subscribe
-    public void onResultFactSet(RuleResultSetEvent event) {
-        resultFact = FactsDao.get().findFactByDescription(presenter.getDatabase(), event.getResultFact());
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
-    }
-
     @Override
     public void setupConditionsForRule(RealmList<Condition> conditions) {
         View listFooter = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE))
@@ -141,33 +121,59 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
         buttonAddCondition.setOnClickListener(v -> presenter.onAddConditionClicked());
         listConditions.addFooterView(listFooter);
 
-        conditionList = conditions;
-        conditionsAdapter = new ConditionsAdapter(this, conditionList.where().findAll(), true);
+        conditionsAdapter = new ConditionsAdapter(this, conditions.where().findAll(), true);
         listConditions.setAdapter(conditionsAdapter);
         listConditions.setOnItemClickListener((parent, view, position, id) -> {
             presenter.onEditConditionClicked(position);
+        });
+
+        Log.w("RuleDetails", "Conditions size: " + conditions.size());
+
+        buttonSaveRule.setOnClickListener(v -> {
+            Log.w("RuleDetails", "Conditions size: " + conditions.size());
+            EventBus.getDefault().post(new SaveRuleRequestedEvent(conditions));
         });
     }
 
     @Override
     public void addNewCondition() {
         int currentConditionPos = conditionsAdapter.getCount();
-        openConditionDialog(null, currentConditionPos);
+        openConditionDialog(-1, currentConditionPos);
     }
 
     @Override
     public void onEditCondition(int position) {
-        openConditionDialog(conditionList.get(position), position);
+        openConditionDialog(conditionsAdapter.getItem(position).getId(), position);
     }
 
-    private void openConditionDialog(Condition condition, int position) {
+    private void openConditionDialog(long conditionId, int position) {
         EditConditionDialogFragment
-                .newInstance(condition, ruleId, position)
+                .newInstance(conditionId, ruleId, position)
                 .show(getSupportFragmentManager(), "");
+    }
+
+
+    @Subscribe
+    public void onDateChanged(RuleDateSetEvent event) {
+        currentRuleDate = event.getRuleDate();
+    }
+
+    @Subscribe
+    public void onResultFactSet(RuleResultSetEvent event) {
+        resultFactTitle = event.getResultFactTitle();
+        Log.w("RuleDetails", "Conditions result size: " + event.getConditions().size());
+        Fact resultFact = FactsDao.get().findFactByDescription(presenter.getDatabase(), resultFactTitle);
+        presenter.onSaveRuleClicked(baseId, ruleId, event.getConditions(), resultFact, currentRuleDate);
     }
 
     @Override
     public void onSaveThisRule() {
         onBackPressed();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 }

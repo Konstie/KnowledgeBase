@@ -1,9 +1,11 @@
 package com.app.knowledgebase.models;
 
+import java.io.Serializable;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class IteratedFact extends RealmObject {
+public class IteratedFact extends RealmObject implements Serializable {
     @PrimaryKey private int uniqueId;
     private Fact fact;
     private boolean activated;

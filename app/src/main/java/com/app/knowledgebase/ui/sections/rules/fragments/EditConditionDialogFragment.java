@@ -23,12 +23,13 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class EditConditionDialogFragment extends BaseDialogFragment {
-    private static final String EXTRA_CONDITION = "EXTRA_CONDITION";
+    private static final String EXTRA_CONDITION_ID = "EXTRA_CONDITION_ID";
     private static final String EXTRA_RULE_ID = "EXTRA_RULE_ID";
     private static final String EXTRA_CONDITION_POS_IN_RULE = "EXTRA_CONDITION_POS_IN_RULE";
 
     private boolean newCondition = true;
     private int ruleId;
+    private long conditionId;
     private int positionInRule;
     private String newFactSelection;
     private String newConditionOperator;
@@ -41,12 +42,12 @@ public class EditConditionDialogFragment extends BaseDialogFragment {
     @Bind(R.id.btn_save) Button buttonSaveCondition;
     @Bind(R.id.btn_cancel) Button buttonCancel;
 
-    public static EditConditionDialogFragment newInstance(Condition currentCondition, int ruleId, int positionInRule) {
+    public static EditConditionDialogFragment newInstance(long conditionId, int ruleId, int positionInRule) {
         EditConditionDialogFragment dialog = new EditConditionDialogFragment();
         Bundle args = new Bundle();
-        args.putSerializable(EXTRA_CONDITION, currentCondition);
+        args.putSerializable(EXTRA_CONDITION_ID, conditionId);
         args.putInt(EXTRA_RULE_ID, ruleId);
-        args.putInt(EXTRA_CONDITION_POS_IN_RULE, positionInRule);
+        args.putLong(EXTRA_CONDITION_POS_IN_RULE, positionInRule);
         dialog.setArguments(args);
         return dialog;
     }
@@ -58,15 +59,17 @@ public class EditConditionDialogFragment extends BaseDialogFragment {
 
         if (getArguments() != null) {
             ruleId = getArguments().getInt(EXTRA_RULE_ID);
-            currentCondition = (Condition) getArguments().getSerializable(EXTRA_CONDITION);
+            conditionId = getArguments().getLong(EXTRA_CONDITION_ID);
             positionInRule = getArguments().getInt(EXTRA_CONDITION_POS_IN_RULE);
-            if (currentCondition != null) newCondition = false;
         }
 
-        if (currentCondition == null) {
+        if (conditionId == -1) {
             ConditionsDao.get().createNewCondition(presenter.getDatabase());
             currentCondition = presenter.getLastCreatedCondition();
             newCondition = true;
+        } else {
+            currentCondition = ConditionsDao.get().findConditionById(presenter.getDatabase(), conditionId);
+            newCondition = false;
         }
     }
 

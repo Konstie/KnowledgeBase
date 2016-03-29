@@ -1,9 +1,11 @@
 package com.app.knowledgebase.models;
 
+import java.io.Serializable;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class ConditionPart extends RealmObject {
+public class ConditionPart extends RealmObject implements Serializable {
     @PrimaryKey private int id;
     private String conditionOperator;
     private Fact conditionFact;

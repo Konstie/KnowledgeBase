@@ -1,10 +1,12 @@
 package com.app.knowledgebase.models;
 
+import java.io.Serializable;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class ResolveIteration extends RealmObject {
+public class ResolveIteration extends RealmObject implements Serializable {
     @PrimaryKey private String uniqueId;
     private int number;
     private RealmList<Fact> facts;

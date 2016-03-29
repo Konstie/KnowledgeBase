@@ -13,19 +13,19 @@ public class RuleInfoPagerAdapter extends FragmentStatePagerAdapter {
     private static final int TYPE_DATE = 1;
     private static final int RULE_INFO_PAGES_COUNT = 2;
 
-    private Rule currentRule;
+    private int currentRuleId;
 
-    public RuleInfoPagerAdapter(FragmentManager fm, Rule currentRule) {
+    public RuleInfoPagerAdapter(FragmentManager fm, int currentRuleId) {
         super(fm);
-        this.currentRule = currentRule;
+        this.currentRuleId = currentRuleId;
     }
 
     @Override
     public Fragment getItem(int position) {
         if (position == TYPE_RESULT) {
-            return RuleResultFragment.newInstance(currentRule);
+            return RuleResultFragment.newInstance(currentRuleId);
         } else if (position == TYPE_DATE) {
-            return RuleDateFragment.newInstance(currentRule);
+            return RuleDateFragment.newInstance(currentRuleId);
         } else {
             return new Fragment();
         }

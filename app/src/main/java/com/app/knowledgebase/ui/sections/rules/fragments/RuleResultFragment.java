@@ -13,12 +13,16 @@ import android.widget.TextView;
 
 import com.app.knowledgebase.R;
 import com.app.knowledgebase.dao.FactsDao;
+import com.app.knowledgebase.events.RuleResultSetEvent;
+import com.app.knowledgebase.events.SaveRuleRequestedEvent;
 import com.app.knowledgebase.events.SwipedRulePanelEvent;
+import com.app.knowledgebase.models.Fact;
 import com.app.knowledgebase.models.Rule;
 import com.app.knowledgebase.ui.sections.rules.SwipeDirection;
 import com.app.knowledgebase.ui.sections.rules.presenters.RuleResultPresenter;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,17 +30,17 @@ import butterknife.ButterKnife;
 public class RuleResultFragment extends Fragment {
     private static final String KEY_RULE = "currentRule";
 
-    private Rule currentRule;
+    private int currentRuleId;
 
     private RuleResultPresenter presenter;
 
     @Bind(R.id.btn_swipe_right) ImageButton buttonSwipeRight;
     @Bind(R.id.edit_result) AutoCompleteTextView editResultFact;
 
-    public static RuleResultFragment newInstance(Rule currentRule) {
+    public static RuleResultFragment newInstance(int currentRuleId) {
         RuleResultFragment fragment = new RuleResultFragment();
         Bundle args = new Bundle();
-        args.putSerializable(KEY_RULE, currentRule);
+        args.putInt(KEY_RULE, currentRuleId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,7 +50,7 @@ public class RuleResultFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            currentRule = (Rule) getArguments().getSerializable(KEY_RULE);
+            currentRuleId =  getArguments().getInt(KEY_RULE);
         }
         presenter = new RuleResultPresenter(getActivity());
     }
@@ -66,5 +70,22 @@ public class RuleResultFragment extends Fragment {
         editResultFact.setAdapter(adapter);
 
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Subscribe
+    public void onSaveRuleRequested(SaveRuleRequestedEvent event) {
+        EventBus.getDefault().post(new RuleResultSetEvent(editResultFact.getText().toString(), event.getConditions()));
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 }

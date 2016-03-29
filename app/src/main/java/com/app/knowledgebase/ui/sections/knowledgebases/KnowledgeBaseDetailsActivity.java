@@ -3,6 +3,7 @@ package com.app.knowledgebase.ui.sections.knowledgebases;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
@@ -10,6 +11,7 @@ import android.widget.GridView;
 import com.app.knowledgebase.R;
 import com.app.knowledgebase.constants.Constants;
 import com.app.knowledgebase.helpers.IntentHelper;
+import com.app.knowledgebase.models.KnowledgeBase;
 import com.app.knowledgebase.models.Rule;
 import com.app.knowledgebase.ui.sections.abs.BaseActivity;
 import com.app.knowledgebase.ui.sections.knowledgebases.presenters.IKnowledgeBaseDetailsView;
@@ -20,6 +22,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class KnowledgeBaseDetailsActivity extends BaseActivity implements IKnowledgeBaseDetailsView {
@@ -43,14 +46,17 @@ public class KnowledgeBaseDetailsActivity extends BaseActivity implements IKnowl
         presenter.getKnowledgeBaseId();
         presenter.onRulesListFilled(knowledgeBaseId);
 
+        Log.w("KnowledgeDBActivity", "knowledgeBaseId: " + knowledgeBaseId);
+
         buttonAddRule.setOnClickListener(v -> {
             IntentHelper.get().createNewRule(this, knowledgeBaseId);
         });
     }
 
     @Override
-    public void showKnowledgeBaseDetails(RealmResults<Rule> rulesList) {
-        adapter = new RulesListAdapter(this, rulesList, true);
+    public void showKnowledgeBaseDetails(RealmList<Rule> rulesList) {
+        Log.w("KnowledgeDBActivity", "Rules list size: " + rulesList.size());
+        adapter = new RulesListAdapter(this, rulesList);
         rulesListView.setAdapter(adapter);
         rulesListView.setOnItemClickListener((parent, view, position, id) -> {
             presenter.openRuleDetails(rulesList.get(position).getId());
@@ -72,6 +78,12 @@ public class KnowledgeBaseDetailsActivity extends BaseActivity implements IKnowl
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
     }
 
     private void runKnowledgeBase() {

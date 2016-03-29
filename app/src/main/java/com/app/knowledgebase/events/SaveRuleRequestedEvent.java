@@ -4,17 +4,11 @@ import com.app.knowledgebase.models.Condition;
 
 import io.realm.RealmList;
 
-public class RuleResultSetEvent {
-    private String resultFactTitle;
+public class SaveRuleRequestedEvent {
     private RealmList<Condition> conditions;
 
-    public RuleResultSetEvent(String resultFactTitle, RealmList<Condition> conditions) {
-        this.resultFactTitle = resultFactTitle;
+    public SaveRuleRequestedEvent(RealmList<Condition> conditions) {
         this.conditions = conditions;
-    }
-
-    public String getResultFactTitle() {
-        return resultFactTitle;
     }
 
     public RealmList<Condition> getConditions() {

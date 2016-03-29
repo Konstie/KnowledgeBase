@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/rules_list_view"
         android:drawSelectorOnTop="true"
+        android:numColumns="3"
         android:verticalSpacing="5dp"
         android:focusable="true"
         android:clickable="true">

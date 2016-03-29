@@ -3,6 +3,7 @@ package com.app.knowledgebase.ui.sections.rules.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.app.knowledgebase.R;
+import com.app.knowledgebase.dao.RulesDao;
 import com.app.knowledgebase.events.RuleDateSetEvent;
 import com.app.knowledgebase.events.SwipedRulePanelEvent;
 import com.app.knowledgebase.models.Rule;
@@ -17,6 +19,7 @@ import com.app.knowledgebase.ui.sections.rules.SwipeDirection;
 import com.app.knowledgebase.ui.sections.rules.presenters.IRuleDateView;
 import com.app.knowledgebase.ui.sections.rules.presenters.RuleDatePresenter;
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
+import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -28,7 +31,7 @@ import butterknife.ButterKnife;
 public class RuleDateFragment extends Fragment implements IRuleDateView {
     private static final String KEY_RULE = "currentRule";
 
-    private Rule currentRule;
+    private int currentRuleId;
 
     private RuleDatePresenter presenter;
 
@@ -36,10 +39,10 @@ public class RuleDateFragment extends Fragment implements IRuleDateView {
     @Bind(R.id.text_date) TextView textDate;
     @Bind(R.id.btn_edit_date) ImageButton buttonEditDate;
 
-    public static RuleDateFragment newInstance(Rule currentRule) {
+    public static RuleDateFragment newInstance(int currentRuleId) {
         RuleDateFragment fragment = new RuleDateFragment();
         Bundle args = new Bundle();
-        args.putSerializable(KEY_RULE, currentRule);
+        args.putInt(KEY_RULE, currentRuleId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -49,10 +52,15 @@ public class RuleDateFragment extends Fragment implements IRuleDateView {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            currentRule = (Rule) getArguments().getSerializable(KEY_RULE);
+            currentRuleId = getArguments().getInt(KEY_RULE);
+            Log.w("RuleDateFragment", "RuleId: " + currentRuleId);
         }
 
-        presenter = new RuleDatePresenter(getActivity(), this, currentRule);
+        presenter = new RuleDatePresenter(getActivity(), this, currentRuleId);
+
+        if (currentRuleId == -1) {
+            RulesDao.get().createNewRule(presenter.getDatabase());
+        }
     }
 
     @Nullable

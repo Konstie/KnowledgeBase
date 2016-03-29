@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.app.knowledgebase.R;
@@ -11,13 +12,15 @@ import com.app.knowledgebase.models.Rule;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.realm.RealmBaseAdapter;
-import io.realm.RealmResults;
+import io.realm.RealmList;
 
-public class RulesListAdapter extends RealmBaseAdapter<Rule> {
+public class RulesListAdapter extends BaseAdapter {
+    private Context context;
+    private RealmList<Rule> rules;
 
-    public RulesListAdapter(Context context, RealmResults<Rule> realmResults, boolean automaticUpdate) {
-        super(context, realmResults, automaticUpdate);
+    public RulesListAdapter(Context context, RealmList<Rule> realmResults) {
+        this.context = context;
+        this.rules = realmResults;
     }
 
     @Override
@@ -26,7 +29,7 @@ public class RulesListAdapter extends RealmBaseAdapter<Rule> {
         RuleHolder holder;
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
-            convertView = inflater.inflate(R.layout.item_knowledge_base, parent, false);
+            convertView = inflater.inflate(R.layout.item_rule, parent, false);
             holder = new RuleHolder(convertView);
             convertView.setTag(holder);
         } else {
@@ -40,12 +43,17 @@ public class RulesListAdapter extends RealmBaseAdapter<Rule> {
 
     @Override
     public Rule getItem(int i) {
-        return realmResults.get(i);
+        return rules.get(i);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
     public int getCount() {
-        return realmResults.size();
+        return rules.size();
     }
 
     static class RuleHolder {

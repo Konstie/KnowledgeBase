@@ -17,12 +17,14 @@ import io.realm.Realm;
 public class RuleDatePresenter extends BasePresenter implements IRuleDatePresenter {
     private IRuleDateView ruleDateView;
     private Date ruleDate;
+    private int currentRuleId;
     private Rule currentRule;
 
-    public RuleDatePresenter(Context context, IRuleDateView ruleDateView, Rule currentRule) {
+    public RuleDatePresenter(Context context, IRuleDateView ruleDateView, int currentRuleId) {
         super(context);
         this.ruleDateView = ruleDateView;
-        this.currentRule = currentRule;
+        this.currentRuleId = currentRuleId;
+        this.currentRule = RulesDao.get().findRuleByUniqueId(getDatabase(), currentRuleId);
     }
 
     @Override

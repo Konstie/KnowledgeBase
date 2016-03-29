@@ -77,6 +77,7 @@ dependencies {
     compile 'com.code-troopers.betterpickers:library:2.5.1'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.getbase:floatingactionbutton:1.10.1'
+    compile 'com.google.code.gson:gson:2.6.2'
 
     compile('com.github.afollestad.material-dialogs:core:0.8.5.6@aar') {
         transitive = true
