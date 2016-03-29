@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -14,14 +15,16 @@ import com.app.knowledgebase.ui.sections.rules.presenters.AddRulePresenter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.realm.RealmBaseAdapter;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
-public class ConditionsAdapter extends RealmBaseAdapter<Condition> {
-    private RealmResults<Condition> conditions;
+public class ConditionsAdapter extends BaseAdapter {
+    private Context context;
+    private RealmList<Condition> conditions;
     private AddRulePresenter presenter;
 
-    public ConditionsAdapter(Context context, RealmResults<Condition> conditions, boolean autoUpdate) {
-        super(context, conditions, autoUpdate);
+    public ConditionsAdapter(Context context, RealmList<Condition> conditions) {
+        this.context = context;
         this.conditions = conditions;
         presenter = new AddRulePresenter(context, null);
     }

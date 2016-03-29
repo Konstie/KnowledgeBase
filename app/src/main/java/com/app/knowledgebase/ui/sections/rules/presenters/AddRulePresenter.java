@@ -18,6 +18,7 @@ import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 
 public class AddRulePresenter extends BasePresenter implements IAddRulePresenter {
     private IAddRuleView addRuleView;
@@ -30,9 +31,11 @@ public class AddRulePresenter extends BasePresenter implements IAddRulePresenter
     @Override
     public void onConditionsInitialized(int ruleId) {
         Log.w("AddRulePresenter", "Rule id: " + ruleId);
-        Rule currentRule = RulesDao.get().findRuleByUniqueId(getDatabase(), ruleId);
-        RealmList<Condition> conditions = currentRule.getConditions();
-        addRuleView.setupConditionsForRule(conditions);
+        RealmResults<Condition> conditions = ConditionsDao.get().findConditiondByRuleId(getDatabase(), ruleId);
+        RealmList<Condition> conditionsForRule = new RealmList<>();
+        conditionsForRule.addAll(conditions.subList(0, conditions.size()));
+        Log.w("AddRulePresenter", "Conditions count: " + conditionsForRule.size());
+        addRuleView.setupConditionsForRule(conditionsForRule);
     }
 
     @Override
@@ -50,16 +53,16 @@ public class AddRulePresenter extends BasePresenter implements IAddRulePresenter
         KnowledgeBase knowledgeBase = KnowledgeBaseDao.get().findKnowledgeBaseById(getDatabase(), baseId);
         RealmList<Rule> rules = knowledgeBase.getRules();
         Rule currentRule = RulesDao.get().findRuleByUniqueId(getDatabase(), ruleId);
-        Log.w("Conditions count: ", "" + conditionList.size());
+        Log.w("Conditions count ", "" + conditionList.size());
         getDatabase().executeTransaction(realm -> {
+            Log.w("Add rule presenter", "Rule saved: id #" + ruleId + ", baseId: " + baseId
+                    + ", conditions count: " + conditionList.size());
             currentRule.setDescription("Test #" + ruleId);
             currentRule.setActivated(false);
             currentRule.setDateAdded(currentRuleDate);
             currentRule.setConditions(conditionList);
             currentRule.setFactsCount(conditionList.size());
             currentRule.setResultFact(resultFact);
-            Log.w("Add rule presenter", "Rule saved: id #" + ruleId + ", baseId: " + baseId
-                    + ", conditions count: " + conditionList.size());
         });
 
         getDatabase().executeTransaction(realm -> {

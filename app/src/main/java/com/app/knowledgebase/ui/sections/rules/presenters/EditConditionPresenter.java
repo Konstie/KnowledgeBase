@@ -61,6 +61,7 @@ public class EditConditionPresenter extends BasePresenter implements IEditCondit
             newCondition.setConditionItem(conditionPart);
             newCondition.setPositionInRule(positionInRule);
             newCondition.setId(IdHelper.get().getGeneratedUniqueIdForCondition(getDatabase()));
+            newCondition.setRuleId(ruleId);
 
             Rule ruleToEdit = RulesDao.get().findRuleByUniqueId(database, ruleId);
             RealmList<Condition> conditions = ruleToEdit.getConditions();

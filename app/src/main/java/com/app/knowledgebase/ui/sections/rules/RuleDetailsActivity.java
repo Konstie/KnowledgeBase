@@ -121,7 +121,7 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
         buttonAddCondition.setOnClickListener(v -> presenter.onAddConditionClicked());
         listConditions.addFooterView(listFooter);
 
-        conditionsAdapter = new ConditionsAdapter(this, conditions.where().findAll(), true);
+        conditionsAdapter = new ConditionsAdapter(this, conditions);
         listConditions.setAdapter(conditionsAdapter);
         listConditions.setOnItemClickListener((parent, view, position, id) -> {
             presenter.onEditConditionClicked(position);

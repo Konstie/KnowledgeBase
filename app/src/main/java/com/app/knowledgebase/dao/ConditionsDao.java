@@ -35,6 +35,11 @@ public class ConditionsDao {
         return query.findFirst();
     }
 
+    public RealmResults<Condition> findConditiondByRuleId(Realm db, long ruleId) {
+        RealmQuery<Condition> query = db.where(Condition.class);
+        return query.equalTo("ruleId", ruleId).findAll();
+    }
+
     public Condition findConditionByPositionInKnowledgeBase(Realm database, String knowledgeBaseName, int position) {
         RealmQuery<Condition> query = database.where(Condition.class);
         query

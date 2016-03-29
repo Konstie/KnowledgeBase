@@ -8,6 +8,7 @@ import io.realm.annotations.PrimaryKey;
 public class Condition extends RealmObject implements Serializable {
     @PrimaryKey private long id;
     private int positionInRule;
+    private int ruleId;
     private ConditionPart conditionItem;
 
     public long getId() {
@@ -16,6 +17,14 @@ public class Condition extends RealmObject implements Serializable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public int getRuleId() {
+        return ruleId;
+    }
+
+    public void setRuleId(int ruleId) {
+        this.ruleId = ruleId;
     }
 
     public int getPositionInRule() {
