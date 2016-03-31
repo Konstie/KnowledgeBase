@@ -17,6 +17,7 @@ public class KnowledgeBaseDetailsPresenter extends BasePresenter implements IKno
 
     @Override
     public void onRulesListFilled(int knowledgeBaseId) {
+        Log.w("KnowledgeDBPresenter", "Requested id: " + knowledgeBaseId);
         KnowledgeBase currentBase = KnowledgeBaseDao.get().findKnowledgeBaseById(getDatabase(), knowledgeBaseId);
         Log.w("KnowledgeDBPresenter", "knowledge base id: " + currentBase.getId());
         Log.w("KnowledgeDBPresenter", "knowledge base title: " + currentBase.getTitle());

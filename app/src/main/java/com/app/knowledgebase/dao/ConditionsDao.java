@@ -22,10 +22,11 @@ public class ConditionsDao {
         return instance;
     }
 
-    public void createNewCondition(Realm database) {
+    public void createNewCondition(Realm database, int ruleId) {
         database.executeTransaction(realm -> {
             Condition condition = database.createObject(Condition.class);
             condition.setId(IdHelper.get().getGeneratedUniqueIdForCondition(database));
+            condition.setRuleId(ruleId);
         });
     }
 
@@ -35,7 +36,7 @@ public class ConditionsDao {
         return query.findFirst();
     }
 
-    public RealmResults<Condition> findConditiondByRuleId(Realm db, long ruleId) {
+    public RealmResults<Condition> findConditionsByRuleId(Realm db, long ruleId) {
         RealmQuery<Condition> query = db.where(Condition.class);
         return query.equalTo("ruleId", ruleId).findAll();
     }

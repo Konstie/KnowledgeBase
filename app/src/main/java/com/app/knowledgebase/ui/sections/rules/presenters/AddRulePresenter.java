@@ -6,17 +6,14 @@ import android.util.Log;
 import com.app.knowledgebase.dao.ConditionsDao;
 import com.app.knowledgebase.dao.KnowledgeBaseDao;
 import com.app.knowledgebase.dao.RulesDao;
-import com.app.knowledgebase.helpers.IdHelper;
 import com.app.knowledgebase.models.Condition;
 import com.app.knowledgebase.models.Fact;
 import com.app.knowledgebase.models.KnowledgeBase;
 import com.app.knowledgebase.models.Rule;
 import com.app.knowledgebase.ui.sections.abs.presenter.BasePresenter;
 
-import java.util.Arrays;
 import java.util.Date;
 
-import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
@@ -31,7 +28,7 @@ public class AddRulePresenter extends BasePresenter implements IAddRulePresenter
     @Override
     public void onConditionsInitialized(int ruleId) {
         Log.w("AddRulePresenter", "Rule id: " + ruleId);
-        RealmResults<Condition> conditions = ConditionsDao.get().findConditiondByRuleId(getDatabase(), ruleId);
+        RealmResults<Condition> conditions = ConditionsDao.get().findConditionsByRuleId(getDatabase(), ruleId);
         RealmList<Condition> conditionsForRule = new RealmList<>();
         conditionsForRule.addAll(conditions.subList(0, conditions.size()));
         Log.w("AddRulePresenter", "Conditions count: " + conditionsForRule.size());
@@ -49,7 +46,7 @@ public class AddRulePresenter extends BasePresenter implements IAddRulePresenter
     }
 
     @Override
-    public void onSaveRuleClicked(int baseId, int ruleId, RealmList<Condition> conditionList, Fact resultFact, Date currentRuleDate) {
+    public void onSaveRuleClicked(int baseId, int ruleId, RealmList<Condition> conditionList, Fact resultFact, Date currentRuleDate, boolean newRule) {
         KnowledgeBase knowledgeBase = KnowledgeBaseDao.get().findKnowledgeBaseById(getDatabase(), baseId);
         RealmList<Rule> rules = knowledgeBase.getRules();
         Rule currentRule = RulesDao.get().findRuleByUniqueId(getDatabase(), ruleId);
@@ -67,8 +64,11 @@ public class AddRulePresenter extends BasePresenter implements IAddRulePresenter
 
         getDatabase().executeTransaction(realm -> {
             RealmList<Rule> newRulesList = new RealmList<Rule>();
+            Log.e("AddRule", "Rules to add: " + newRulesList.size());
             newRulesList.addAll(rules);
-            newRulesList.add(currentRule);
+            if (newRule) {
+                newRulesList.add(currentRule);
+            }
             knowledgeBase.setRules(newRulesList);
         });
         addRuleView.onSaveThisRule();

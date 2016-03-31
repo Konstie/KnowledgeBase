@@ -64,8 +64,6 @@ public class EditConditionDialogFragment extends BaseDialogFragment {
         }
 
         if (conditionId == -1) {
-            ConditionsDao.get().createNewCondition(presenter.getDatabase());
-            currentCondition = presenter.getLastCreatedCondition();
             newCondition = true;
         } else {
             currentCondition = ConditionsDao.get().findConditionById(presenter.getDatabase(), conditionId);
@@ -116,9 +114,9 @@ public class EditConditionDialogFragment extends BaseDialogFragment {
 
         buttonSaveCondition.setOnClickListener(v -> {
             if (newCondition) {
-                presenter.onSaveNewConditionClicked(ruleId, positionInRule, newConditionOperator, textCondition.getText().toString());
+                presenter.onSaveNewConditionClicked(ruleId, -1, positionInRule, newConditionOperator, textCondition.getText().toString());
             } else {
-                presenter.onUpdateNewConditionClicked(currentCondition.getId(), ruleId, positionInRule, newConditionOperator, textCondition.getText().toString());
+                presenter.onUpdateNewConditionClicked(conditionId, ruleId, positionInRule, newConditionOperator, textCondition.getText().toString());
             }
             EditConditionDialogFragment.this.dismissAllowingStateLoss();
         });

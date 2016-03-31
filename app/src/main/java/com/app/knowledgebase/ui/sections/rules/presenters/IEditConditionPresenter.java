@@ -7,6 +7,6 @@ import com.app.knowledgebase.ui.sections.abs.presenter.IBasePresenter;
 public interface IEditConditionPresenter extends IBasePresenter {
     Fact getFactByTitle(String description);
     Condition getLastCreatedCondition();
-    void onSaveNewConditionClicked(int ruleId, int positionInRule, String newOperator, String newFact);
+    void onSaveNewConditionClicked(int ruleId, long conditionId, int positionInRule, String newOperator, String newFact);
     void onUpdateNewConditionClicked(long conditionId, int ruleId, int positionInRule, String newOperator, String newFact);
 }

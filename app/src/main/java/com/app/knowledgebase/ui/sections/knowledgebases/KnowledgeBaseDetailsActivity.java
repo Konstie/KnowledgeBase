@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.app.knowledgebase.R;
 import com.app.knowledgebase.constants.Constants;
@@ -87,7 +88,7 @@ public class KnowledgeBaseDetailsActivity extends BaseActivity implements IKnowl
     }
 
     private void runKnowledgeBase() {
-
+        Toast.makeText(KnowledgeBaseDetailsActivity.this, "This feature is under construction", Toast.LENGTH_SHORT).show();
     }
 
     @Override

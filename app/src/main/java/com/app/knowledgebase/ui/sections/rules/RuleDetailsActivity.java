@@ -7,12 +7,14 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.app.knowledgebase.R;
 import com.app.knowledgebase.constants.Constants;
+import com.app.knowledgebase.dao.ConditionsDao;
 import com.app.knowledgebase.dao.FactsDao;
 import com.app.knowledgebase.dao.RulesDao;
 import com.app.knowledgebase.events.RuleDateSetEvent;
@@ -74,6 +76,7 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
         currentRuleDate = (currentRule == null || currentRule.getDateAdded() == null)
                 ? new Date(System.currentTimeMillis()) : currentRule.getDateAdded();
         if (currentRule == null) {
+            Log.w("RuleDetails", "Creating new rule");
             RulesDao.get().createNewRule(presenter.getDatabase());
             currentRule = presenter.getLastCreatedRule();
             ruleId = currentRule.getId();
@@ -121,7 +124,9 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
         buttonAddCondition.setOnClickListener(v -> presenter.onAddConditionClicked());
         listConditions.addFooterView(listFooter);
 
-        conditionsAdapter = new ConditionsAdapter(this, conditions);
+        conditionsAdapter = new ConditionsAdapter(this, ConditionsDao.get().findConditionsByRuleId(
+                presenter.getDatabase(), ruleId), true
+        );
         listConditions.setAdapter(conditionsAdapter);
         listConditions.setOnItemClickListener((parent, view, position, id) -> {
             presenter.onEditConditionClicked(position);
@@ -163,7 +168,7 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
         resultFactTitle = event.getResultFactTitle();
         Log.w("RuleDetails", "Conditions result size: " + event.getConditions().size());
         Fact resultFact = FactsDao.get().findFactByDescription(presenter.getDatabase(), resultFactTitle);
-        presenter.onSaveRuleClicked(baseId, ruleId, event.getConditions(), resultFact, currentRuleDate);
+        presenter.onSaveRuleClicked(baseId, ruleId, event.getConditions(), resultFact, currentRuleDate, newRule);
     }
 
     @Override
@@ -175,5 +180,16 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
     protected void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

@@ -43,7 +43,7 @@ public class EditConditionPresenter extends BasePresenter implements IEditCondit
     }
 
     @Override
-    public void onSaveNewConditionClicked(int ruleId, int positionInRule, String newOperator, String newFact) {
+    public void onSaveNewConditionClicked(int ruleId, long conditionId, int positionInRule, String newOperator, String newFact) {
         Fact conditionFact;
         if (FactsDao.get().findFactByDescription(getDatabase(), newFact) != null) {
             conditionFact = FactsDao.get().findFactByDescription(getDatabase(), newFact);
@@ -58,9 +58,9 @@ public class EditConditionPresenter extends BasePresenter implements IEditCondit
             conditionPart.setConditionOperator(newOperator);
 
             conditionPart.setConditionFact(conditionFact);
+            newCondition.setId(IdHelper.get().getGeneratedUniqueIdForCondition(getDatabase()));
             newCondition.setConditionItem(conditionPart);
             newCondition.setPositionInRule(positionInRule);
-            newCondition.setId(IdHelper.get().getGeneratedUniqueIdForCondition(getDatabase()));
             newCondition.setRuleId(ruleId);
 
             Rule ruleToEdit = RulesDao.get().findRuleByUniqueId(database, ruleId);
