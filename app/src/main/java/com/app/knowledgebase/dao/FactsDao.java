@@ -66,6 +66,15 @@ public class FactsDao {
         return allFacts;
     }
 
+    public Fact createNewFact(Realm database, String factDescription) {
+        database.beginTransaction();
+        Fact newFact = database.createObject(Fact.class);
+        newFact.setId(IdHelper.get().getGeneratedUniqueIdForFact(database));
+        newFact.setDescription(factDescription);
+        database.commitTransaction();
+        return newFact;
+    }
+
     public IteratedFact createIteratedFact(Realm database, Fact fact, boolean activated) {
         database.beginTransaction();
         IteratedFact newIteratedFact = database.createObject(IteratedFact.class);

@@ -29,18 +29,21 @@ import butterknife.ButterKnife;
 
 public class RuleResultFragment extends Fragment {
     private static final String KEY_RULE = "currentRule";
+    private static final String KEY_IS_NEW = "isNewRule";
 
     private int currentRuleId;
+    private boolean isNewRule;
 
     private RuleResultPresenter presenter;
 
     @Bind(R.id.btn_swipe_right) ImageButton buttonSwipeRight;
     @Bind(R.id.edit_result) AutoCompleteTextView editResultFact;
 
-    public static RuleResultFragment newInstance(int currentRuleId) {
+    public static RuleResultFragment newInstance(int currentRuleId, boolean isNewRule) {
         RuleResultFragment fragment = new RuleResultFragment();
         Bundle args = new Bundle();
         args.putInt(KEY_RULE, currentRuleId);
+        args.putBoolean(KEY_IS_NEW, isNewRule);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,6 +54,7 @@ public class RuleResultFragment extends Fragment {
 
         if (getArguments() != null) {
             currentRuleId =  getArguments().getInt(KEY_RULE);
+            isNewRule = getArguments().getBoolean(KEY_IS_NEW);
         }
         presenter = new RuleResultPresenter(getActivity());
     }
@@ -70,6 +74,15 @@ public class RuleResultFragment extends Fragment {
         editResultFact.setAdapter(adapter);
 
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (!isNewRule) {
+            editResultFact.setText(presenter.getResultFactDescription(currentRuleId));
+        }
     }
 
     @Override

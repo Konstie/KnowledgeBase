@@ -12,5 +12,5 @@ public interface IAddRulePresenter extends IBasePresenter {
     void onConditionsInitialized(int ruleId);
     void onAddConditionClicked();
     void onEditConditionClicked(int position);
-    void onSaveRuleClicked(int baseId, int ruleId, RealmList<Condition> conditionList, Fact resultFact, Date currentRuleDate, boolean newRule);
+    void onSaveRuleClicked(int baseId, int ruleId, RealmList<Condition> conditionList, String resultFact, Date currentRuleDate, boolean newRule);
 }

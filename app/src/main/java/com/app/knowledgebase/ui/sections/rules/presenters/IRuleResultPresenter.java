@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface IRuleResultPresenter extends IBasePresenter {
     List<String> getPossibleResultFactsList();
+    String getResultFactDescription(int ruleId);
 }

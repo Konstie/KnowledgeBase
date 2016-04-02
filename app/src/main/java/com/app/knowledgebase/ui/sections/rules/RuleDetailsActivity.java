@@ -82,6 +82,7 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
             ruleId = currentRule.getId();
         } else {
             newRule = false;
+            resultFactTitle = currentRule.getResultFact().getDescription();
         }
 
         presenter.onConditionsInitialized(ruleId);
@@ -102,7 +103,7 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
     }
 
     private void setupRuleConfigPager(int currentRuleId) {
-        ruleInfoPagerAdapter = new RuleInfoPagerAdapter(getSupportFragmentManager(), currentRuleId);
+        ruleInfoPagerAdapter = new RuleInfoPagerAdapter(getSupportFragmentManager(), currentRuleId, newRule);
         panelPager.setAdapter(ruleInfoPagerAdapter);
         panelPager.setCurrentItem(PAGE_RESULT);
     }
@@ -167,8 +168,7 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
     public void onResultFactSet(RuleResultSetEvent event) {
         resultFactTitle = event.getResultFactTitle();
         Log.w("RuleDetails", "Conditions result size: " + event.getConditions().size());
-        Fact resultFact = FactsDao.get().findFactByDescription(presenter.getDatabase(), resultFactTitle);
-        presenter.onSaveRuleClicked(baseId, ruleId, event.getConditions(), resultFact, currentRuleDate, newRule);
+        presenter.onSaveRuleClicked(baseId, ruleId, event.getConditions(), resultFactTitle, currentRuleDate, newRule);
     }
 
     @Override

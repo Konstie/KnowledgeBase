@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.app.knowledgebase.dao.ConditionsDao;
+import com.app.knowledgebase.dao.FactsDao;
 import com.app.knowledgebase.dao.KnowledgeBaseDao;
 import com.app.knowledgebase.dao.RulesDao;
 import com.app.knowledgebase.models.Condition;
@@ -46,11 +47,20 @@ public class AddRulePresenter extends BasePresenter implements IAddRulePresenter
     }
 
     @Override
-    public void onSaveRuleClicked(int baseId, int ruleId, RealmList<Condition> conditionList, Fact resultFact, Date currentRuleDate, boolean newRule) {
+    public void onSaveRuleClicked(int baseId, int ruleId, RealmList<Condition> conditionList, String resultFact, Date currentRuleDate, boolean newRule) {
         KnowledgeBase knowledgeBase = KnowledgeBaseDao.get().findKnowledgeBaseById(getDatabase(), baseId);
         RealmList<Rule> rules = knowledgeBase.getRules();
         Rule currentRule = RulesDao.get().findRuleByUniqueId(getDatabase(), ruleId);
+
+        final Fact fact;
+        if (FactsDao.get().findFactByDescription(getDatabase(), resultFact) == null) {
+            fact = FactsDao.get().createFact(getDatabase(), resultFact);
+        } else {
+            fact = FactsDao.get().findFactByDescription(getDatabase(), resultFact);
+        }
+
         Log.w("Conditions count ", "" + conditionList.size());
+        Log.w("Saved fact ", fact.getDescription());
         getDatabase().executeTransaction(realm -> {
             Log.w("Add rule presenter", "Rule saved: id #" + ruleId + ", baseId: " + baseId
                     + ", conditions count: " + conditionList.size());
@@ -59,7 +69,7 @@ public class AddRulePresenter extends BasePresenter implements IAddRulePresenter
             currentRule.setDateAdded(currentRuleDate);
             currentRule.setConditions(conditionList);
             currentRule.setFactsCount(conditionList.size());
-            currentRule.setResultFact(resultFact);
+            currentRule.setResultFact(fact);
         });
 
         getDatabase().executeTransaction(realm -> {
