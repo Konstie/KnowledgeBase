@@ -20,7 +20,7 @@ import io.realm.Realm;
 import io.realm.RealmList;
 
 public class EditConditionPresenter extends BasePresenter implements IEditConditionPresenter {
-    private List<String> conditionOperators;
+    private List<String>  conditionOperators;
 
     private Realm database;
 

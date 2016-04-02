@@ -47,7 +47,7 @@
         </activity>
 
         <activity
-            android:name=".ui.sections.knowledgebases.KnowledgeBaseResultActivity"
+            android:name=".ui.sections.result.KnowledgeBaseResultActivity"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar" >
             <meta-data
@@ -63,6 +63,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.sections.knowledgebases.KnowledgeBaseDetailsActivity" />
         </activity>
+
     </application>
 
 </manifest>

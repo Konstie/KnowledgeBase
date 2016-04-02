@@ -5,11 +5,15 @@ import java.util.Date;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 public class Rule extends RealmObject implements Serializable {
     @PrimaryKey private int id;
-    private boolean activated;
+    private int knowledgeBaseId;
+    private int positionInBase;
+    @Ignore private boolean expired;
+    @Ignore private boolean used;
     private RealmList<Condition> conditions;
     private Fact resultFact;
     private Date dateAdded;
@@ -22,6 +26,22 @@ public class Rule extends RealmObject implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getPositionInBase() {
+        return positionInBase;
+    }
+
+    public void setPositionInBase(int positionInBase) {
+        this.positionInBase = positionInBase;
+    }
+
+    public int getKnowledgeBaseId() {
+        return knowledgeBaseId;
+    }
+
+    public void setKnowledgeBaseId(int knowledgeBaseId) {
+        this.knowledgeBaseId = knowledgeBaseId;
     }
 
     public RealmList<Condition> getConditions() {
@@ -40,12 +60,20 @@ public class Rule extends RealmObject implements Serializable {
         this.resultFact = resultFact;
     }
 
-    public boolean isActivated() {
-        return activated;
+    public boolean isExpired() {
+        return expired;
     }
 
-    public void setActivated(boolean activated) {
-        this.activated = activated;
+    public void setExpired(boolean expired) {
+        this.expired = expired;
+    }
+
+    public boolean isUsed() {
+        return used;
+    }
+
+    public void setUsed(boolean used) {
+        this.used = used;
     }
 
     public Date getDateAdded() {

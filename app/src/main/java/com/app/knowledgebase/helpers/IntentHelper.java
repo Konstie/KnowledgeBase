@@ -7,6 +7,7 @@ import com.app.knowledgebase.constants.Constants;
 import com.app.knowledgebase.ui.sections.facts.FactsListActivity;
 import com.app.knowledgebase.ui.sections.knowledgebases.KnowledgeBaseDetailsActivity;
 import com.app.knowledgebase.ui.sections.knowledgebases.NewKnowledgeBaseActivity;
+import com.app.knowledgebase.ui.sections.result.KnowledgeBaseResultActivity;
 import com.app.knowledgebase.ui.sections.rules.RuleDetailsActivity;
 
 public class IntentHelper {
@@ -49,7 +50,9 @@ public class IntentHelper {
         context.startActivity(new Intent(context, FactsListActivity.class));
     }
 
-    public void openConflictResultActivity(Context context, String knowledgeBaseName) {
-
+    public void openKnowledgeBaseResultActivity(Context context, int baseId) {
+        Intent baseResultsIntent = new Intent(context, KnowledgeBaseResultActivity.class);
+        baseResultsIntent.putExtra(Constants.EXTRA_KNOWLEDGE_BASE_ID, baseId);
+        context.startActivity(baseResultsIntent);
     }
 }

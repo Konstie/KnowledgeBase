@@ -1,25 +1,12 @@
 package com.app.knowledgebase.models;
 
-import java.io.Serializable;
+import java.util.List;
 
-import io.realm.RealmList;
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-
-public class ResolveIteration extends RealmObject implements Serializable {
-    @PrimaryKey private String uniqueId;
+public class ResolveIteration {
     private int number;
-    private RealmList<Fact> facts;
-    private RealmList<Rule> rulesUsed;
-    private Integer conflict;
-
-    public String getUniqueId() {
-        return uniqueId;
-    }
-
-    public void setUniqueId(String uniqueId) {
-        this.uniqueId = uniqueId;
-    }
+    private List<String> facts;
+    private List<String> rulesUsed;
+    private String conflict;
 
     public int getNumber() {
         return number;
@@ -29,27 +16,27 @@ public class ResolveIteration extends RealmObject implements Serializable {
         this.number = number;
     }
 
-    public RealmList<Fact> getFacts() {
+    public List<String> getFacts() {
         return facts;
     }
 
-    public void setFacts(RealmList<Fact> facts) {
+    public void setFacts(List<String> facts) {
         this.facts = facts;
     }
 
-    public RealmList<Rule> getRulesUsed() {
+    public List<String> getRulesUsed() {
         return rulesUsed;
     }
 
-    public void setRulesUsed(RealmList<Rule> rulesUsed) {
+    public void setRulesUsed(List<String> rulesUsed) {
         this.rulesUsed = rulesUsed;
     }
 
-    public Integer getConflict() {
+    public String getConflict() {
         return conflict;
     }
 
-    public void setConflict(Integer conflict) {
+    public void setConflict(String conflict) {
         this.conflict = conflict;
     }
 }

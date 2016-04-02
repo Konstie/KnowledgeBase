@@ -32,22 +32,22 @@ public class StrategiesDao {
             RealmList<Strategy> allStrategies = new RealmList<>();
 
             Strategy strategyLex = database.createObject(Strategy.class);
-            strategyLex.setName("LEX");
+            strategyLex.setName(StrategiesTitles.LEX);
             strategyLex.setUniqueId(IdHelper.get().getGeneratedUniqueIdForStrategy(database));
             Strategy firstActivated = database.createObject(Strategy.class);
-            firstActivated.setName("First activated");
+            firstActivated.setName(StrategiesTitles.FIRST_ACTIVATED);
             firstActivated.setUniqueId(IdHelper.get().getGeneratedUniqueIdForStrategy(database));
             Strategy lastActivated = database.createObject(Strategy.class);
-            lastActivated.setName("Last activated");
+            lastActivated.setName(StrategiesTitles.LAST_ACTIVATED);
             lastActivated.setUniqueId(IdHelper.get().getGeneratedUniqueIdForStrategy(database));
             Strategy complicated = database.createObject(Strategy.class);
-            complicated.setName("Complicated");
+            complicated.setName(StrategiesTitles.COMPLEXITY);
             complicated.setUniqueId(IdHelper.get().getGeneratedUniqueIdForStrategy(database));
             Strategy simplified = database.createObject(Strategy.class);
-            simplified.setName("Simplified");
+            simplified.setName(StrategiesTitles.SIMPLICITY);
             simplified.setUniqueId(IdHelper.get().getGeneratedUniqueIdForStrategy(database));
             Strategy strategyMea = database.createObject(Strategy.class);
-            strategyMea.setName("MEA");
+            strategyMea.setName(StrategiesTitles.MEA);
             strategyMea.setUniqueId(IdHelper.get().getGeneratedUniqueIdForStrategy(database));
 
             allStrategies.addAll(Arrays.asList(strategyLex, strategyMea, simplified, complicated, firstActivated, lastActivated));

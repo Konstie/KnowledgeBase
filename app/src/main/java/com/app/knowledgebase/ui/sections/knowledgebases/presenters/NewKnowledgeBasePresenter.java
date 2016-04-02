@@ -69,19 +69,8 @@ public class NewKnowledgeBasePresenter extends BasePresenter implements INewKnow
         return startFacts;
     }
 
-    private RealmList<IteratedFact> getIteratedFacts(RealmList<Fact> facts) {
-        RealmList<IteratedFact> iteratedFacts = new RealmList<>();
-        for (Fact fact : facts) {
-            IteratedFact iteratedFact = FactsDao.get().createIteratedFact(getDatabase(), fact, true);
-            iteratedFacts.add(iteratedFact);
-        }
-        return iteratedFacts;
-    }
-
     @Override
     public void onSaveNewKnowledgeBaseClicked(String title, RealmList<Strategy> chosenStrategies, RealmList<Fact> startFacts) {
-        RealmList<IteratedFact> iteratedFacts = getIteratedFacts(startFacts);
-
         Realm database = getDatabase();
         database.executeTransaction(realm -> {
             KnowledgeBase knowledgeBase = database.createObject(KnowledgeBase.class);
@@ -89,7 +78,7 @@ public class NewKnowledgeBasePresenter extends BasePresenter implements INewKnow
             knowledgeBase.setTitle(title);
             knowledgeBase.setStrategies(chosenStrategies);
             knowledgeBase.setResolveIterations(null);
-            knowledgeBase.setStartFacts(iteratedFacts);
+            knowledgeBase.setStartFacts(startFacts);
             knowledgeBase.setRules(null);
         });
     }

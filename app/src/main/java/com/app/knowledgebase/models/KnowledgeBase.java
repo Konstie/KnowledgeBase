@@ -10,7 +10,7 @@ import io.realm.annotations.Required;
 public class KnowledgeBase extends RealmObject implements Serializable {
     @PrimaryKey private int id;
     @Required private String title;
-    private RealmList<IteratedFact> startFacts;
+    private RealmList<Fact> startFacts;
     private RealmList<Strategy> strategies;
     private RealmList<Rule> rules;
     private RealmList<ResolveIteration> resolveIterations;
@@ -31,11 +31,11 @@ public class KnowledgeBase extends RealmObject implements Serializable {
         this.title = title;
     }
 
-    public RealmList<IteratedFact> getStartFacts() {
+    public RealmList<Fact> getStartFacts() {
         return startFacts;
     }
 
-    public void setStartFacts(RealmList<IteratedFact> startFacts) {
+    public void setStartFacts(RealmList<Fact> startFacts) {
         this.startFacts = startFacts;
     }
 

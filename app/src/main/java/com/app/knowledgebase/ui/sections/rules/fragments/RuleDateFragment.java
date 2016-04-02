@@ -57,10 +57,6 @@ public class RuleDateFragment extends Fragment implements IRuleDateView {
         }
 
         presenter = new RuleDatePresenter(getActivity(), this, currentRuleId);
-
-        if (currentRuleId == -1) {
-            RulesDao.get().createNewRule(presenter.getDatabase());
-        }
     }
 
     @Nullable

@@ -4,6 +4,7 @@ import com.app.knowledgebase.helpers.IdHelper;
 import com.app.knowledgebase.models.Rule;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmQuery;
 
 public class RulesDao {
@@ -18,10 +19,11 @@ public class RulesDao {
         return instance;
     }
 
-    public void createNewRule(Realm database) {
+    public void createNewRule(Realm database, int rulesCountInBase) {
         database.executeTransaction(realm -> {
             Rule rule = database.createObject(Rule.class);
             rule.setId(IdHelper.get().getGeneratedUniqueIdForRule(database));
+            rule.setPositionInBase(rulesCountInBase);
         });
     }
 
@@ -32,7 +34,8 @@ public class RulesDao {
     }
 
     public Rule getLastCreatedRule(Realm database) {
-        long lastId = database.where(Rule.class).max("id").longValue();
+        long lastId = database.where(Rule.class)
+                .max("id").longValue();
         return findRuleByUniqueId(database, lastId);
     }
 }

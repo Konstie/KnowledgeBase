@@ -23,4 +23,14 @@
         android:layout_marginTop="8dp"
         android:layout_gravity="center_horizontal"
         android:id="@+id/text_rule_description"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/text_rule_date"/>
 </LinearLayout>

@@ -5,7 +5,7 @@ import android.content.Context;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
-public class BasePresenter implements IBasePresenter {
+public abstract class BasePresenter implements IBasePresenter {
     private static final String DB_NAME = "knowledge.realm";
 
     private Context context;

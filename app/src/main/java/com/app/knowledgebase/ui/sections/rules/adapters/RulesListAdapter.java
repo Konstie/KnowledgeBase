@@ -10,6 +10,8 @@ import android.widget.TextView;
 import com.app.knowledgebase.R;
 import com.app.knowledgebase.models.Rule;
 
+import java.text.SimpleDateFormat;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.realm.RealmList;
@@ -37,6 +39,7 @@ public class RulesListAdapter extends BaseAdapter {
         }
         holder.textRuleNumber.setText(String.valueOf(position));
         holder.textDescription.setText(currentRule.getDescription());
+        holder.textRuleDate.setText(SimpleDateFormat.getInstance().format(currentRule.getDateAdded()));
 
         return convertView;
     }
@@ -62,5 +65,6 @@ public class RulesListAdapter extends BaseAdapter {
         }
         @Bind(R.id.text_rule_number) TextView textRuleNumber;
         @Bind(R.id.text_rule_description) TextView textDescription;
+        @Bind(R.id.text_rule_date) TextView textRuleDate;
     }
 }

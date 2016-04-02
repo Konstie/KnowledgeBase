@@ -65,7 +65,7 @@ public class AddRulePresenter extends BasePresenter implements IAddRulePresenter
             Log.w("Add rule presenter", "Rule saved: id #" + ruleId + ", baseId: " + baseId
                     + ", conditions count: " + conditionList.size());
             currentRule.setDescription("Test #" + ruleId);
-            currentRule.setActivated(false);
+            currentRule.setId(ruleId);
             currentRule.setDateAdded(currentRuleDate);
             currentRule.setConditions(conditionList);
             currentRule.setFactsCount(conditionList.size());

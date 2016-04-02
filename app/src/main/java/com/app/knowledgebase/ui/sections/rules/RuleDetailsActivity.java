@@ -47,6 +47,7 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
     private boolean newRule = true;
     private int baseId = -1;
     private int ruleId = -1;
+    private int rulesCountInBase;
     private Date currentRuleDate;
     private String resultFactTitle;
 
@@ -69,6 +70,7 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
         if (getIntent() != null) {
             ruleId = getIntent().getIntExtra(Constants.EXTRA_RULE_ID, -1);
             baseId = getIntent().getIntExtra(Constants.EXTRA_KNOWLEDGE_BASE_ID, -1);
+            rulesCountInBase = getIntent().getIntExtra(Constants.EXTRA_RULES_COUNT_IN_BASE, -1);
         }
 
         presenter = new AddRulePresenter(this, this);
@@ -77,7 +79,7 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
                 ? new Date(System.currentTimeMillis()) : currentRule.getDateAdded();
         if (currentRule == null) {
             Log.w("RuleDetails", "Creating new rule");
-            RulesDao.get().createNewRule(presenter.getDatabase());
+            RulesDao.get().createNewRule(presenter.getDatabase(), rulesCountInBase);
             currentRule = presenter.getLastCreatedRule();
             ruleId = currentRule.getId();
         } else {
