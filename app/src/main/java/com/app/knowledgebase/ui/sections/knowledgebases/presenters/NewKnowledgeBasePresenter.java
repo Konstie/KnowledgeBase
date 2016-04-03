@@ -1,21 +1,21 @@
 package com.app.knowledgebase.ui.sections.knowledgebases.presenters;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.app.knowledgebase.dao.FactsDao;
 import com.app.knowledgebase.dao.StrategiesDao;
 import com.app.knowledgebase.helpers.IdHelper;
 import com.app.knowledgebase.models.Fact;
-import com.app.knowledgebase.models.IteratedFact;
 import com.app.knowledgebase.models.KnowledgeBase;
 import com.app.knowledgebase.models.Strategy;
 import com.app.knowledgebase.ui.sections.abs.presenter.BasePresenter;
 
+import java.util.Arrays;
 import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmList;
-import io.realm.RealmResults;
 
 public class NewKnowledgeBasePresenter extends BasePresenter implements INewKnowledgeBasePresenter {
     private INewKnowledgeBaseView view;
@@ -43,12 +43,21 @@ public class NewKnowledgeBasePresenter extends BasePresenter implements INewKnow
 
     @Override
     public void setCheckedStrategies(boolean[] checkedStrategies) {
+        Log.e("NewKB", "Checked strategies: " + Arrays.toString(checkedStrategies));
+        if (checkedStrategies[StrategiesDao.ID_COMPLEXITY - 1] && checkedStrategies[StrategiesDao.ID_SIMPLICITY - 1]
+                || checkedStrategies[StrategiesDao.ID_LEX - 1] && checkedStrategies[StrategiesDao.ID_MEA - 1]
+                || checkedStrategies[StrategiesDao.ID_FIRST_ACTIVATION - 1] && checkedStrategies[StrategiesDao.ID_LAST_ACTIVATION - 1]) {
+            view.warnIncompatibleStrategies();
+            return;
+        }
+
         for (int index = 0; index < checkedStrategies.length; index++) {
             Strategy currentStrategy = StrategiesDao.get().getStrategyById(getDatabase(), index + 1);
             if (checkedStrategies[index]) {
                 selectedStrategies.add(currentStrategy);
             }
         }
+        view.setSaveOptionAvailable();
     }
 
     @Override
@@ -77,7 +86,6 @@ public class NewKnowledgeBasePresenter extends BasePresenter implements INewKnow
             knowledgeBase.setId(IdHelper.get().getGeneratedUniqueIdForKnowledgeBase(database));
             knowledgeBase.setTitle(title);
             knowledgeBase.setStrategies(chosenStrategies);
-            knowledgeBase.setResolveIterations(null);
             knowledgeBase.setStartFacts(startFacts);
             knowledgeBase.setRules(null);
         });

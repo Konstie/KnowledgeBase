@@ -69,7 +69,7 @@ public class AddRulePresenter extends BasePresenter implements IAddRulePresenter
             currentRule.setDateAdded(currentRuleDate);
             currentRule.setConditions(conditionList);
             currentRule.setFactsCount(conditionList.size());
-            currentRule.setResultFact(fact);
+            currentRule.setConsequentFact(fact);
         });
 
         getDatabase().executeTransaction(realm -> {

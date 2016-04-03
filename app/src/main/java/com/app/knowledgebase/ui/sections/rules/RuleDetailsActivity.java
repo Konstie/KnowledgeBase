@@ -15,14 +15,12 @@ import android.widget.ListView;
 import com.app.knowledgebase.R;
 import com.app.knowledgebase.constants.Constants;
 import com.app.knowledgebase.dao.ConditionsDao;
-import com.app.knowledgebase.dao.FactsDao;
 import com.app.knowledgebase.dao.RulesDao;
 import com.app.knowledgebase.events.RuleDateSetEvent;
 import com.app.knowledgebase.events.RuleResultSetEvent;
 import com.app.knowledgebase.events.SaveRuleRequestedEvent;
 import com.app.knowledgebase.events.SwipedRulePanelEvent;
 import com.app.knowledgebase.models.Condition;
-import com.app.knowledgebase.models.Fact;
 import com.app.knowledgebase.models.Rule;
 import com.app.knowledgebase.ui.sections.abs.BaseActivity;
 import com.app.knowledgebase.ui.sections.rules.adapters.ConditionsAdapter;
@@ -84,7 +82,7 @@ public class RuleDetailsActivity extends BaseActivity implements IAddRuleView {
             ruleId = currentRule.getId();
         } else {
             newRule = false;
-            resultFactTitle = currentRule.getResultFact().getDescription();
+            resultFactTitle = currentRule.getConsequentFact().getDescription();
         }
 
         presenter.onConditionsInitialized(ruleId);

@@ -1,6 +1,7 @@
 package com.app.knowledgebase.models;
 
 import java.io.Serializable;
+import java.util.List;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -13,7 +14,6 @@ public class KnowledgeBase extends RealmObject implements Serializable {
     private RealmList<Fact> startFacts;
     private RealmList<Strategy> strategies;
     private RealmList<Rule> rules;
-    private RealmList<ResolveIteration> resolveIterations;
 
     public int getId() {
         return id;
@@ -53,13 +53,5 @@ public class KnowledgeBase extends RealmObject implements Serializable {
 
     public void setRules(RealmList<Rule> rules) {
         this.rules = rules;
-    }
-
-    public RealmList<ResolveIteration> getResolveIterations() {
-        return resolveIterations;
-    }
-
-    public void setResolveIterations(RealmList<ResolveIteration> resolveIterations) {
-        this.resolveIterations = resolveIterations;
     }
 }

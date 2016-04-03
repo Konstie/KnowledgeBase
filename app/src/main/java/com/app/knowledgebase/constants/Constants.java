@@ -8,8 +8,4 @@ public interface Constants {
 
     String DIVIDER = "#";
     String GOAL = "*";
-
-    int LVL_KNOWLEDGEBASE = 0;
-    int LVL_RULE = 1;
-    int LVL_CONDITION = 2;
 }

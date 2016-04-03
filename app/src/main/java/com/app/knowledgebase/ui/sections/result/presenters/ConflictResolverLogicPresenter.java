@@ -1,4 +1,4 @@
-package com.app.knowledgebase.ui.sections.result;
+package com.app.knowledgebase.ui.sections.result.presenters;
 
 import android.content.Context;
 import android.util.Log;
@@ -28,9 +28,12 @@ import java.util.Set;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
-public class ConflictResolverLogicPresenter extends BasePresenter {
+public class ConflictResolverLogicPresenter extends BasePresenter implements IConflictResolverLogicPresenter {
+    private static final int ITERATIONS_LIMIT = 42;
+
     private int knowledgeBaseId;
     private boolean reachedGoal = false;
+    private IKnowledgeBaseResultView view;
     private List<ResolveIteration> resolveIterations;
     private RealmList<Fact> usedFacts;
     private Set<String> usedFactsDescr;
@@ -38,9 +41,10 @@ public class ConflictResolverLogicPresenter extends BasePresenter {
     private RealmList<Rule> expiredRules;
     private HashSet<Integer> expiredRulesIds;
 
-    public ConflictResolverLogicPresenter(Context context, int knowledgeBaseId) {
+    public ConflictResolverLogicPresenter(Context context, IKnowledgeBaseResultView view, int knowledgeBaseId) {
         super(context);
         this.knowledgeBaseId = knowledgeBaseId;
+        this.view = view;
         this.resolveIterations = new ArrayList<>();
         this.usedFacts = new RealmList<>();
         this.usedFactsDescr = new HashSet<>();
@@ -49,6 +53,7 @@ public class ConflictResolverLogicPresenter extends BasePresenter {
         this.expiredRulesIds = new HashSet<>();
     }
 
+    @Override
     public void initializeKnowledgeBaseRules() {
         KnowledgeBase currentKnowledgeBase = KnowledgeBaseDao.get().findKnowledgeBaseById(getDatabase(), knowledgeBaseId);
         RealmList<Rule> rules = currentKnowledgeBase.getRules();
@@ -64,6 +69,11 @@ public class ConflictResolverLogicPresenter extends BasePresenter {
 
     private void executeKnowledgeBase(RealmList<Rule> rules, RealmList<Strategy> strategies) {
         int counter = 1;
+
+        if (rules == null || rules.isEmpty()) {
+            view.showNoRulesWarning();
+            return;
+        }
 
         while (!reachedGoal) {
             checkRulesAndFacts(rules);
@@ -88,10 +98,12 @@ public class ConflictResolverLogicPresenter extends BasePresenter {
             }
 
             // checks if reached goal
-            Log.e("Solution rule", "Result fact: " + solutionRule.getResultFact().getDescription());
-            if (usedFactsDescr.contains(Constants.GOAL)) {
+            Log.e("Solution rule", "Result fact: " + solutionRule.getConsequentFact().getDescription());
+            if (usedFactsDescr.contains(Constants.GOAL) || counter == ITERATIONS_LIMIT) {
                 Log.w("Conflict", "Reached goal");
                 reachedGoal = true;
+                Log.w("Conflict", "Resolve iters size: " + resolveIterations.size());
+                view.showResolveIterationsList(resolveIterations);
                 return;
             }
             counter++;
@@ -100,9 +112,9 @@ public class ConflictResolverLogicPresenter extends BasePresenter {
 
     private void checkRulesAndFacts(RealmList<Rule> rulesInBase) {
         for (Rule rule : rulesInBase) {
-            if (isRulePasses(rule) && !usedFactsDescr.contains(rule.getResultFact().getDescription())) {
-                usedFacts.add(rule.getResultFact());
-                usedFactsDescr.add(rule.getResultFact().getDescription());
+            if (isRulePasses(rule) && !usedFactsDescr.contains(rule.getConsequentFact().getDescription())) {
+                usedFacts.add(rule.getConsequentFact());
+                usedFactsDescr.add(rule.getConsequentFact().getDescription());
                 if (!expiredRulesIds.contains(rule.getId())) {
                     activeRules.add(rule);
                 }

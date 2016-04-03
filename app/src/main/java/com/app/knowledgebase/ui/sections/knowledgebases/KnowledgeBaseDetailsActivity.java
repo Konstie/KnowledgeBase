@@ -89,7 +89,6 @@ public class KnowledgeBaseDetailsActivity extends BaseActivity implements IKnowl
 
     private void runKnowledgeBase() {
         IntentHelper.get().openKnowledgeBaseResultActivity(this, knowledgeBaseId);
-        Toast.makeText(KnowledgeBaseDetailsActivity.this, "This feature is under construction", Toast.LENGTH_SHORT).show();
     }
 
     @Override

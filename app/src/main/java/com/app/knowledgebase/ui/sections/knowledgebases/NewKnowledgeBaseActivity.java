@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.app.knowledgebase.R;
 import com.app.knowledgebase.ui.sections.abs.BaseActivity;
@@ -93,5 +94,19 @@ public class NewKnowledgeBaseActivity extends BaseActivity
                 buttonSaveBase.setEnabled(false);
             }
         });
+    }
+
+    @Override
+    public void warnIncompatibleStrategies() {
+        Toast.makeText(
+                NewKnowledgeBaseActivity.this,
+                "You have chosen incompatible strategies. Please, try again by checking other options.",
+                Toast.LENGTH_SHORT).show();
+        buttonSaveBase.setEnabled(false);
+    }
+
+    @Override
+    public void setSaveOptionAvailable() {
+        buttonSaveBase.setEnabled(true);
     }
 }

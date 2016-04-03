@@ -2,14 +2,12 @@ package com.app.knowledgebase.dao;
 
 import com.app.knowledgebase.helpers.IdHelper;
 import com.app.knowledgebase.models.Fact;
-import com.app.knowledgebase.models.IteratedFact;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
@@ -73,16 +71,6 @@ public class FactsDao {
         newFact.setDescription(factDescription);
         database.commitTransaction();
         return newFact;
-    }
-
-    public IteratedFact createIteratedFact(Realm database, Fact fact, boolean activated) {
-        database.beginTransaction();
-        IteratedFact newIteratedFact = database.createObject(IteratedFact.class);
-        newIteratedFact.setUniqueId(IdHelper.get().getGeneratedUniqueIdForIteratedFact(database));
-        newIteratedFact.setFact(fact);
-        newIteratedFact.setActivated(activated);
-        database.commitTransaction();
-        return newIteratedFact;
     }
 
     public Fact createFact(Realm database, String description) {
