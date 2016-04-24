@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import com.app.knowledgebase.ui.sections.rules.presenters.AddRulePresenter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.realm.RealmBaseAdapter;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class ConditionsAdapter extends RealmBaseAdapter<Condition> {
@@ -69,6 +71,8 @@ public class ConditionsAdapter extends RealmBaseAdapter<Condition> {
 
         if (position == 0) {
             holder.textOperator.setVisibility(View.GONE);
+        } else {
+            holder.textOperator.setVisibility(View.VISIBLE);
         }
 
 

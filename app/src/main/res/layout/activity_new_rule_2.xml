@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:id="@+id/toolbar">
+    </android.support.v7.widget.Toolbar>
+
+    <View
+        android:id="@+id/toolbar_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_below="@id/toolbar"
+        android:background="@drawable/shadow" />
+
+    <include
+        android:id="@+id/content_date_view"
+        android:layout_width="match_parent"
+        android:layout_height="112dp"
+        layout="@layout/content_rule_date"
+        android:layout_alignParentBottom="true"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager_rule_main_info"
+        android:layout_below="@id/toolbar_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/content_date_view" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btn_add_rule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_action_save_base"
+        android:layout_above="@+id/content_date_view"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="8dp"/>
+</RelativeLayout>

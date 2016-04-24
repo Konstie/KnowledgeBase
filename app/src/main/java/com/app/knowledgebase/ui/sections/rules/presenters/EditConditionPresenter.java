@@ -11,6 +11,7 @@ import com.app.knowledgebase.models.ConditionPart;
 import com.app.knowledgebase.models.Fact;
 import com.app.knowledgebase.models.Rule;
 import com.app.knowledgebase.ui.sections.abs.presenter.BasePresenter;
+import com.app.knowledgebase.ui.sections.rules.fragments.RuleDetailsType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,15 +22,17 @@ import io.realm.RealmList;
 
 public class EditConditionPresenter extends BasePresenter implements IEditConditionPresenter {
     private List<String>  conditionOperators;
+    private RuleDetailsType ruleDetailsType;
 
     private Realm database;
 
-    public EditConditionPresenter(Context context) {
+    public EditConditionPresenter(Context context, RuleDetailsType ruleDetailsType) {
         super(context);
         database = getDatabase();
         conditionOperators = new ArrayList<>(
                 Arrays.asList(ConditionOperators.OR, ConditionOperators.AND)
         );
+        this.ruleDetailsType = ruleDetailsType;
     }
 
     @Override
@@ -64,8 +67,15 @@ public class EditConditionPresenter extends BasePresenter implements IEditCondit
             newCondition.setRuleId(ruleId);
 
             Rule ruleToEdit = RulesDao.get().findRuleByUniqueId(database, ruleId);
-            RealmList<Condition> conditions = ruleToEdit.getConditions();
-            conditions.add(newCondition);
+            if (ruleDetailsType == RuleDetailsType.CONDITIONS) {
+                RealmList<Condition> conditions = ruleToEdit.getConditions();
+                conditions.add(newCondition);
+                ruleToEdit.setConditions(conditions);
+            } else if (ruleDetailsType == RuleDetailsType.CONSEQUENTS) {
+                RealmList<Condition> conditions = ruleToEdit.getConsequents();
+                conditions.add(newCondition);
+                ruleToEdit.setConsequents(conditions);
+            }
         });
     }
 

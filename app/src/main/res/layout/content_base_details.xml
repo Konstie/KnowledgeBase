@@ -7,6 +7,18 @@
     tools:showIn="@layout/activity_bases_list"
     tools:context=".BasesListActivity">
 
+    <TextView
+        android:id="@+id/text_no_rules"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/no_rules_requirement"
+        android:visibility="gone"
+        android:textSize="20sp"/>
+
     <GridView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,4 +29,5 @@
         android:focusable="true"
         android:clickable="true">
     </GridView>
+
 </RelativeLayout>

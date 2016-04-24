@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import io.realm.RealmList;
 import io.realm.RealmResults;
@@ -82,23 +83,27 @@ public class ConflictResolverLogicPresenter extends BasePresenter implements ICo
             resolveIteration.setNumber(counter);
             resolveIteration.setFacts(new ArrayList<>(usedFactsDescr));
 
-            // starts from given facts values, defines matching rules
-            Rule solutionRule = getSolutionRuleForIteration(strategies);
-            resolveIteration.setRulesUsed(new ArrayList<>(getUsedRulesTitles(activeRules)));
-            resolveIteration.setConflict(solutionRule.getDescription());
-            resolveIterations.add(resolveIteration);
+            if (getSolutionRuleForIteration(strategies) != null) {
+                // starts from given facts values, defines matching rules
+                Rule solutionRule = getSolutionRuleForIteration(strategies);
+                resolveIteration.setRulesUsed(new ArrayList<>(getUsedRulesTitles(activeRules)));
+                resolveIteration.setConflict(solutionRule.getDescription());
+                resolveIterations.add(resolveIteration);
 
-            // checks matching rule as expired, will be filtered for next iterations
-            expiredRules.add(solutionRule);
-            expiredRulesIds.add(solutionRule.getId());
+                // checks matching rule as expired, will be filtered for next iterations
+                expiredRules.add(solutionRule);
+                expiredRulesIds.add(solutionRule.getId());
 
-            int expiredRulePosition = getExpiredRulePosition(activeRules, solutionRule.getId());
-            if (expiredRulePosition != -1) {
-                activeRules.remove(expiredRulePosition);
+                int expiredRulePosition = getExpiredRulePosition(activeRules, solutionRule.getId());
+                if (expiredRulePosition != -1) {
+                    activeRules.remove(expiredRulePosition);
+                }
+            } else {
+                resolveIteration.setRulesUsed(new ArrayList<String>());
+                resolveIteration.setConflict("-");
+                resolveIterations.add(resolveIteration);
             }
 
-            // checks if reached goal
-            Log.e("Solution rule", "Result fact: " + solutionRule.getConsequentFact().getDescription());
             if (usedFactsDescr.contains(Constants.GOAL) || counter == ITERATIONS_LIMIT) {
                 Log.w("Conflict", "Reached goal");
                 reachedGoal = true;
@@ -112,17 +117,44 @@ public class ConflictResolverLogicPresenter extends BasePresenter implements ICo
 
     private void checkRulesAndFacts(RealmList<Rule> rulesInBase) {
         for (Rule rule : rulesInBase) {
-            if (isRulePasses(rule) && !usedFactsDescr.contains(rule.getConsequentFact().getDescription())) {
-                usedFacts.add(rule.getConsequentFact());
-                usedFactsDescr.add(rule.getConsequentFact().getDescription());
+            if (isRulePasses(rule)) {
+                RealmList<Fact> matchingConsequents = getMatchingConsequents(rule.getConsequents());
+                usedFacts.addAll(matchingConsequents);
+                usedFactsDescr.addAll(getMatchingConsequentsStr(matchingConsequents));
                 if (!expiredRulesIds.contains(rule.getId())) {
                     activeRules.add(rule);
+                    break;
                 }
             }
         }
         for (Fact fact : usedFacts) {
             Log.e("Conflict", "Used fact: " + fact.getDescription());
         }
+    }
+
+    private RealmList<Fact> getMatchingConsequents(RealmList<Condition> consequents) {
+        RealmList<Fact> matchingConsequents = new RealmList<>();
+        for (Condition condition : consequents) {
+            if (condition.getConditionItem().getConditionOperator().equals(ConditionOperators.AND)) {
+                matchingConsequents.add(condition.getConditionItem().getConditionFact());
+            } else if (condition.getConditionItem().getConditionOperator().equals(ConditionOperators.OR)) {
+                if (!usedFactsDescr.contains(condition.getConditionItem().getConditionFact().getDescription())) {
+                    matchingConsequents.add(condition.getConditionItem().getConditionFact());
+                }
+            }
+        }
+
+        return matchingConsequents;
+    }
+
+    private Set<String> getMatchingConsequentsStr(RealmList<Fact> facts) {
+        Set<String> consequentsStr = new TreeSet<>();
+
+        for (Fact fact : facts) {
+            consequentsStr.add(fact.getDescription());
+        }
+
+        return consequentsStr;
     }
 
     private boolean isRulePasses(Rule currentRule) {
@@ -189,11 +221,14 @@ public class ConflictResolverLogicPresenter extends BasePresenter implements ICo
             Collections.sort(activeRules, new RulesByMaxDateComparator());
             Collections.sort(activeRules, Collections.reverseOrder(new RulesByMaxDateComparator()));
         }
-        resultRule = activeRules.get(0);
 
-        Log.e("Conflict", "Result rule: " + resultRule.getDescription());
+        if (activeRules.size() > 0) {
+            resultRule = activeRules.get(0);
+            Log.e("Conflict", "Result rule: " + resultRule.getDescription());
+            return resultRule;
+        }
 
-        return resultRule;
+        return null;
     }
 
     private List<String> getUsedRulesTitles(RealmList<Rule> rules) {

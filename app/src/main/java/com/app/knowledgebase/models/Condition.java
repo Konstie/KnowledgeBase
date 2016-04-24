@@ -1,15 +1,15 @@
 package com.app.knowledgebase.models;
 
-import java.io.Serializable;
-
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class Condition extends RealmObject implements Serializable {
-    @PrimaryKey private long id;
-    private int positionInRule;
+public class Condition extends RealmObject {
+    @PrimaryKey
+    private long id;
     private int ruleId;
     private ConditionPart conditionItem;
+    private boolean isConsequent;
+    private int positionInRule;
 
     public long getId() {
         return id;
@@ -27,6 +27,14 @@ public class Condition extends RealmObject implements Serializable {
         this.ruleId = ruleId;
     }
 
+    public ConditionPart getConditionItem() {
+        return conditionItem;
+    }
+
+    public void setConditionItem(ConditionPart conditionItem) {
+        this.conditionItem = conditionItem;
+    }
+
     public int getPositionInRule() {
         return positionInRule;
     }
@@ -35,11 +43,11 @@ public class Condition extends RealmObject implements Serializable {
         this.positionInRule = positionInRule;
     }
 
-    public ConditionPart getConditionItem() {
-        return conditionItem;
+    public void setIsConsequent(boolean isConsequent) {
+        this.isConsequent = isConsequent;
     }
 
-    public void setConditionItem(ConditionPart conditionItem) {
-        this.conditionItem = conditionItem;
+    public boolean isConsequent() {
+        return isConsequent;
     }
 }

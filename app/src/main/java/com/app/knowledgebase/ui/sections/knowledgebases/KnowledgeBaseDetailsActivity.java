@@ -6,27 +6,25 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.GridView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.app.knowledgebase.R;
 import com.app.knowledgebase.constants.Constants;
 import com.app.knowledgebase.helpers.IntentHelper;
-import com.app.knowledgebase.models.KnowledgeBase;
 import com.app.knowledgebase.models.Rule;
 import com.app.knowledgebase.ui.sections.abs.BaseActivity;
 import com.app.knowledgebase.ui.sections.knowledgebases.presenters.IKnowledgeBaseDetailsView;
 import com.app.knowledgebase.ui.sections.knowledgebases.presenters.KnowledgeBaseDetailsPresenter;
 import com.app.knowledgebase.ui.sections.rules.adapters.RulesListAdapter;
 
-import org.greenrobot.eventbus.EventBus;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.realm.RealmList;
-import io.realm.RealmResults;
 
 public class KnowledgeBaseDetailsActivity extends BaseActivity implements IKnowledgeBaseDetailsView {
+    private boolean rulesListFilled = false;
     private int knowledgeBaseId;
     private String knowledgeBaseName;
 
@@ -36,6 +34,7 @@ public class KnowledgeBaseDetailsActivity extends BaseActivity implements IKnowl
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.rules_list_view) GridView rulesListView;
     @Bind(R.id.btn_add_new_rule) FloatingActionButton buttonAddRule;
+    @Bind(R.id.text_no_rules) TextView noRulesTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,6 +58,13 @@ public class KnowledgeBaseDetailsActivity extends BaseActivity implements IKnowl
         Log.w("KnowledgeDBActivity", "Rules list size: " + rulesList.size());
         adapter = new RulesListAdapter(this, rulesList);
         rulesListView.setAdapter(adapter);
+        if (rulesList.size() > 0) {
+            rulesListFilled = true;
+            noRulesTextView.setVisibility(View.INVISIBLE);
+        } else {
+            rulesListFilled = false;
+            noRulesTextView.setVisibility(View.VISIBLE);
+        }
         rulesListView.setOnItemClickListener((parent, view, position, id) -> {
             presenter.openRuleDetails(rulesList.get(position).getId());
         });
@@ -84,7 +90,14 @@ public class KnowledgeBaseDetailsActivity extends BaseActivity implements IKnowl
     @Override
     protected void onResume() {
         super.onResume();
-        adapter.notifyDataSetChanged();
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+            if (rulesListFilled) {
+                noRulesTextView.setVisibility(View.INVISIBLE);
+            } else {
+                noRulesTextView.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     private void runKnowledgeBase() {

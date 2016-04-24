@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.app.knowledgebase.R;
+import com.app.knowledgebase.models.Fact;
 import com.app.knowledgebase.models.KnowledgeBase;
 import com.app.knowledgebase.models.Strategy;
 
@@ -15,6 +16,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.realm.RealmBaseAdapter;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 /**
@@ -39,6 +41,7 @@ public class KnowledgeBaseListAdapter extends RealmBaseAdapter<KnowledgeBase> {
         }
         holder.baseTitleTextView.setText(knowledgeBase.getTitle());
         holder.baseStrategyTextView.setText(getFormattedStrategiesText(knowledgeBase.getStrategies()));
+        holder.baseStartFactsTextView.setText(getFormattedStartFactsText(knowledgeBase.getStartFacts()));
 
         return convertView;
     }
@@ -54,6 +57,17 @@ public class KnowledgeBaseListAdapter extends RealmBaseAdapter<KnowledgeBase> {
         return strategiesText;
     }
 
+    private String getFormattedStartFactsText(RealmList<Fact> startFacts) {
+        String factsText = "";
+        for (int i = 0; i < startFacts.size(); i++) {
+            factsText += startFacts.get(i).getDescription();
+            if (i < startFacts.size() - 1) {
+                factsText += ", ";
+            }
+        }
+        return factsText;
+    }
+
     @Override
     public KnowledgeBase getItem(int i) {
         return realmResults.get(i);
@@ -62,6 +76,7 @@ public class KnowledgeBaseListAdapter extends RealmBaseAdapter<KnowledgeBase> {
     static class KnowledgeBaseHolder {
         @Bind(R.id.base_title_text) TextView baseTitleTextView;
         @Bind(R.id.base_title_strategy) TextView baseStrategyTextView;
+        @Bind(R.id.base_start_facts_text) TextView baseStartFactsTextView;
 
         public KnowledgeBaseHolder(View rootView) {
             ButterKnife.bind(this, rootView);

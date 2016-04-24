@@ -4,8 +4,6 @@ import com.app.knowledgebase.helpers.IdHelper;
 import com.app.knowledgebase.models.Condition;
 import com.app.knowledgebase.models.Rule;
 
-import java.util.List;
-
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
@@ -38,7 +36,16 @@ public class ConditionsDao {
 
     public RealmResults<Condition> findConditionsByRuleId(Realm db, long ruleId) {
         RealmQuery<Condition> query = db.where(Condition.class);
-        return query.equalTo("ruleId", ruleId).findAll();
+        query.equalTo("ruleId", ruleId)
+                .equalTo("isConsequent", false);
+        return query.findAll();
+    }
+
+    public RealmResults<Condition> findConsequentsByRuleId(Realm db, long ruleId) {
+        RealmQuery<Condition> query = db.where(Condition.class);
+        query.equalTo("ruleId", ruleId)
+                .equalTo("isConsequent", true);
+        return query.findAll();
     }
 
     public Condition findConditionByPositionInKnowledgeBase(Realm database, String knowledgeBaseName, int position) {

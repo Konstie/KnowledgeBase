@@ -15,7 +15,8 @@ public class Rule extends RealmObject implements Serializable {
     @Ignore private boolean expired;
     @Ignore private boolean used;
     private RealmList<Condition> conditions;
-    private Fact consequentFact;
+    private RealmList<Condition> consequents;
+//    private Fact consequentFact;
     private Date dateAdded;
     private int factsCount;
     private String description;
@@ -52,13 +53,13 @@ public class Rule extends RealmObject implements Serializable {
         this.conditions = conditions;
     }
 
-    public Fact getConsequentFact() {
-        return consequentFact;
-    }
-
-    public void setConsequentFact(Fact consequentFact) {
-        this.consequentFact = consequentFact;
-    }
+//    public Fact getConsequentFact() {
+//        return consequentFact;
+//    }
+//
+//    public void setConsequentFact(Fact consequentFact) {
+//        this.consequentFact = consequentFact;
+//    }
 
     public boolean isExpired() {
         return expired;
@@ -98,5 +99,13 @@ public class Rule extends RealmObject implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public RealmList<Condition> getConsequents() {
+        return consequents;
+    }
+
+    public void setConsequents(RealmList<Condition> consequents) {
+        this.consequents = consequents;
     }
 }

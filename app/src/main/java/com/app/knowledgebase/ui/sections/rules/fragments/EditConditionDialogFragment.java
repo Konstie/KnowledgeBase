@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.app.knowledgebase.R;
 import com.app.knowledgebase.dao.ConditionsDao;
@@ -25,12 +26,16 @@ import butterknife.ButterKnife;
 public class EditConditionDialogFragment extends BaseDialogFragment {
     private static final String EXTRA_CONDITION_ID = "EXTRA_CONDITION_ID";
     private static final String EXTRA_RULE_ID = "EXTRA_RULE_ID";
+    private static final String EXTRA_IS_FIRST = "EXTRA_IS_FIRST";
+    private static final String EXTRA_RULE_TYPE = "EXTRA_RULE_TYPE";
     private static final String EXTRA_CONDITION_POS_IN_RULE = "EXTRA_CONDITION_POS_IN_RULE";
 
     private boolean newCondition = true;
+    private boolean isFirst = false;
     private int ruleId;
     private long conditionId;
     private int positionInRule;
+    private RuleDetailsType ruleDetailsType;
     private String newFactSelection;
     private String newConditionOperator;
     private Condition currentCondition;
@@ -39,14 +44,17 @@ public class EditConditionDialogFragment extends BaseDialogFragment {
 
     @Bind(R.id.edit_condition_operator) Spinner editConditionOperatorSpinner;
     @Bind(R.id.text_condition) AutoCompleteTextView textCondition;
+    @Bind(R.id.if_label_text_view) TextView textIfClause;
     @Bind(R.id.btn_save) Button buttonSaveCondition;
     @Bind(R.id.btn_cancel) Button buttonCancel;
 
-    public static EditConditionDialogFragment newInstance(long conditionId, int ruleId, int positionInRule) {
+    public static EditConditionDialogFragment newInstance(RuleDetailsType ruleDetailsType, long conditionId, int ruleId, int positionInRule, boolean isFirst) {
         EditConditionDialogFragment dialog = new EditConditionDialogFragment();
         Bundle args = new Bundle();
         args.putSerializable(EXTRA_CONDITION_ID, conditionId);
         args.putInt(EXTRA_RULE_ID, ruleId);
+        args.putBoolean(EXTRA_IS_FIRST, isFirst);
+        args.putSerializable(EXTRA_RULE_TYPE, ruleDetailsType);
         args.putLong(EXTRA_CONDITION_POS_IN_RULE, positionInRule);
         dialog.setArguments(args);
         return dialog;
@@ -55,11 +63,13 @@ public class EditConditionDialogFragment extends BaseDialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new EditConditionPresenter(getContext());
+        presenter = new EditConditionPresenter(getContext(), ruleDetailsType);
 
         if (getArguments() != null) {
             ruleId = getArguments().getInt(EXTRA_RULE_ID);
             conditionId = getArguments().getLong(EXTRA_CONDITION_ID);
+            isFirst = getArguments().getBoolean(EXTRA_IS_FIRST);
+            ruleDetailsType = (RuleDetailsType) getArguments().getSerializable(EXTRA_RULE_TYPE);
             positionInRule = getArguments().getInt(EXTRA_CONDITION_POS_IN_RULE);
         }
 
@@ -120,6 +130,14 @@ public class EditConditionDialogFragment extends BaseDialogFragment {
             }
             EditConditionDialogFragment.this.dismissAllowingStateLoss();
         });
+
+        if (isFirst) {
+            textIfClause.setVisibility(View.VISIBLE);
+            editConditionOperatorSpinner.setVisibility(View.INVISIBLE);
+        } else {
+            textIfClause.setVisibility(View.GONE);
+            editConditionOperatorSpinner.setVisibility(View.VISIBLE);
+        }
 
         buttonCancel.setOnClickListener(v -> dismissDialog());
 

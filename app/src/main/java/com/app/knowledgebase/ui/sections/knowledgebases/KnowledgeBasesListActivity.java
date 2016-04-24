@@ -3,10 +3,9 @@ package com.app.knowledgebase.ui.sections.knowledgebases;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.app.knowledgebase.R;
 import com.app.knowledgebase.helpers.IntentHelper;
@@ -22,6 +21,8 @@ import butterknife.ButterKnife;
 import io.realm.RealmResults;
 
 public class KnowledgeBasesListActivity extends AppCompatActivity implements IConflictsListView {
+    private boolean basesListFilled = false;
+
     private KnowledgeBaseListAdapter adapter;
     private KnowledgeBasesListPresenter presenter;
 
@@ -29,6 +30,7 @@ public class KnowledgeBasesListActivity extends AppCompatActivity implements ICo
     @Bind(R.id.btn_action_database_menu) FloatingActionsMenu buttonActionsMenu;
     @Bind(R.id.btn_open_facts) FloatingActionButton buttonOpenFacts;
     @Bind(R.id.btn_add_new_database) FloatingActionButton buttonAddNewDatabase;
+    @Bind(R.id.text_no_bases) TextView noBasesTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +59,9 @@ public class KnowledgeBasesListActivity extends AppCompatActivity implements ICo
 
         if (adapter != null) {
             adapter.notifyDataSetChanged();
+            noBasesTextView.setVisibility((adapter.getCount() > 0) ? View.GONE : View.VISIBLE);
         }
+
         buttonActionsMenu.collapse();
     }
 
@@ -70,6 +74,14 @@ public class KnowledgeBasesListActivity extends AppCompatActivity implements ICo
                     knowledgeBases.get(position).getId(), knowledgeBases.get(position).getTitle()
             );
         });
+
+        if (knowledgeBases.size() > 0) {
+            noBasesTextView.setVisibility(View.GONE);
+            basesListFilled = true;
+        } else {
+            noBasesTextView.setVisibility(View.VISIBLE);
+            basesListFilled = false;
+        }
     }
 
     @Override

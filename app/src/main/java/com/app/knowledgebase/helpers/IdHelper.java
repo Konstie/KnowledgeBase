@@ -6,7 +6,6 @@ import com.app.knowledgebase.models.ConditionPart;
 import com.app.knowledgebase.models.Fact;
 import com.app.knowledgebase.models.KnowledgeBase;
 import com.app.knowledgebase.models.Rule;
-import com.app.knowledgebase.models.Strategy;
 
 import io.realm.Realm;
 

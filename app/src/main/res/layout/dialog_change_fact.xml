@@ -31,6 +31,19 @@
             android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
             android:layout_above="@+id/linearLayout" />
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/if_label_text_view"
+            android:textSize="26sp"
+            android:hint="@string/if_clause_start"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_toStartOf="@+id/text_condition"
+            android:layout_toLeftOf="@id/text_condition"
+            android:layout_alignRight="@+id/edit_condition_operator"
+            android:layout_alignEnd="@+id/edit_condition_operator" />
         <AutoCompleteTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
